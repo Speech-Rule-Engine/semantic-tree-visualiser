@@ -1,6 +1,6 @@
 /*************************************************************************
  *
- *  visualiseStree
+ *  visualise.js
  *
  *  A simple visualiser for the semantic tree produced by the SRE.
  *  With much help of code from
