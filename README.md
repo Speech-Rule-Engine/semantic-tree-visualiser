@@ -10,6 +10,6 @@ Load visualise.html into a browser and load a sample from the samples directory,
 
     samples/quad.json
 
-for the quadratic equation.
+for the quadratic equation. This currently only works via a URL, i.e., not locally from files.
 
 For left-right trees, change the ```direction``` option to ```left-right```.
