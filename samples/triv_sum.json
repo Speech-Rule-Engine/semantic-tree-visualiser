@@ -1,0 +1,80 @@
+{
+  "stree": {
+    "infixop": {
+      "role": "addition",
+      "id": "11",
+      "$t": "+",
+      "content": {
+        "operator": [
+          {
+            "role": "addition",
+            "id": "1",
+            "$t": "+"
+          },
+          {
+            "role": "addition",
+            "id": "3",
+            "$t": "+"
+          },
+          {
+            "role": "addition",
+            "id": "5",
+            "$t": "+"
+          },
+          {
+            "role": "addition",
+            "id": "7",
+            "$t": "+"
+          },
+          {
+            "role": "addition",
+            "id": "9",
+            "$t": "+"
+          }
+        ]
+      },
+      "children": {
+        "identifier": [
+          {
+            "role": "latinletter",
+            "font": "italic",
+            "id": "0",
+            "$t": "b"
+          },
+          {
+            "role": "latinletter",
+            "font": "italic",
+            "id": "2",
+            "$t": "a"
+          },
+          {
+            "role": "latinletter",
+            "font": "italic",
+            "id": "6",
+            "$t": "c"
+          },
+          {
+            "role": "latinletter",
+            "font": "italic",
+            "id": "10",
+            "$t": "d"
+          }
+        ],
+        "number": [
+          {
+            "role": "integer",
+            "font": "normal",
+            "id": "4",
+            "$t": "4"
+          },
+          {
+            "role": "integer",
+            "font": "normal",
+            "id": "8",
+            "$t": "3"
+          }
+        ]
+      }
+    }
+  }
+}

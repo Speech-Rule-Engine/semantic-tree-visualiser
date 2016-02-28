@@ -1,0 +1,119 @@
+{
+  "stree": {
+    "relseq": {
+      "role": "equality",
+      "id": "16",
+      "$t": "=",
+      "content": {
+        "relation": {
+          "role": "equality",
+          "id": "9",
+          "$t": "="
+        }
+      },
+      "children": {
+        "infixop": {
+          "role": "addition",
+          "id": "15",
+          "$t": "+",
+          "content": {
+            "operator": [
+              {
+                "role": "addition",
+                "id": "4",
+                "$t": "+"
+              },
+              {
+                "role": "addition",
+                "id": "7",
+                "$t": "+"
+              }
+            ]
+          },
+          "children": {
+            "infixop": [
+              {
+                "role": "implicit",
+                "id": "12",
+                "$t": "⁢",
+                "content": {
+                  "operator": {
+                    "role": "multiplication",
+                    "id": "11",
+                    "$t": "⁢"
+                  }
+                },
+                "children": {
+                  "identifier": {
+                    "role": "latinletter",
+                    "font": "italic",
+                    "id": "0",
+                    "$t": "a"
+                  },
+                  "superscript": {
+                    "role": "latinletter",
+                    "id": "3",
+                    "children": {
+                      "identifier": {
+                        "role": "latinletter",
+                        "font": "italic",
+                        "id": "1",
+                        "$t": "x"
+                      },
+                      "number": {
+                        "role": "integer",
+                        "font": "normal",
+                        "id": "2",
+                        "$t": "2"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "role": "implicit",
+                "id": "14",
+                "$t": "⁢",
+                "content": {
+                  "operator": {
+                    "role": "multiplication",
+                    "id": "13",
+                    "$t": "⁢"
+                  }
+                },
+                "children": {
+                  "identifier": [
+                    {
+                      "role": "latinletter",
+                      "font": "italic",
+                      "id": "5",
+                      "$t": "b"
+                    },
+                    {
+                      "role": "latinletter",
+                      "font": "italic",
+                      "id": "6",
+                      "$t": "x"
+                    }
+                  ]
+                }
+              }
+            ],
+            "identifier": {
+              "role": "latinletter",
+              "font": "italic",
+              "id": "8",
+              "$t": "c"
+            }
+          }
+        },
+        "number": {
+          "role": "integer",
+          "font": "normal",
+          "id": "10",
+          "$t": "0"
+        }
+      }
+    }
+  }
+}

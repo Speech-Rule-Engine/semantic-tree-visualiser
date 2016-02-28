@@ -1,0 +1,88 @@
+{
+  "stree": {
+    "punctuated": {
+      "role": "sequence",
+      "id": "9",
+      "content": {
+        "punctuation": [
+          {
+            "role": "comma",
+            "id": "1",
+            "$t": ","
+          },
+          {
+            "role": "comma",
+            "id": "3",
+            "$t": ","
+          },
+          {
+            "role": "comma",
+            "id": "5",
+            "$t": ","
+          },
+          {
+            "role": "comma",
+            "id": "7",
+            "$t": ","
+          }
+        ]
+      },
+      "children": {
+        "identifier": [
+          {
+            "role": "latinletter",
+            "font": "italic",
+            "id": "0",
+            "$t": "a"
+          },
+          {
+            "role": "latinletter",
+            "font": "italic",
+            "id": "2",
+            "$t": "b"
+          },
+          {
+            "role": "latinletter",
+            "font": "italic",
+            "id": "4",
+            "$t": "c"
+          },
+          {
+            "role": "latinletter",
+            "font": "italic",
+            "id": "6",
+            "$t": "d"
+          },
+          {
+            "role": "latinletter",
+            "font": "italic",
+            "id": "8",
+            "$t": "e"
+          }
+        ],
+        "punctuation": [
+          {
+            "role": "comma",
+            "id": "1",
+            "$t": ","
+          },
+          {
+            "role": "comma",
+            "id": "3",
+            "$t": ","
+          },
+          {
+            "role": "comma",
+            "id": "5",
+            "$t": ","
+          },
+          {
+            "role": "comma",
+            "id": "7",
+            "$t": ","
+          }
+        ]
+      }
+    }
+  }
+}

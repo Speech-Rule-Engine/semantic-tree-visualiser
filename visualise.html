@@ -1,0 +1,57 @@
+ <!-- Copyright (c) 2016 The MathJax Consortium -->
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <title>Semantic Tree Visualisation</title>
+    <link type="text/css" rel="stylesheet" href="styles/style.css"/>
+    <script type="text/javascript" src="src/d3/d3.js"></script>
+    <script type="text/javascript" src="src/d3/d3.layout.js"></script>
+    <style type="text/css">
+
+
+.node circle {
+  cursor: pointer;
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node text {
+  font-size: 11px;
+}
+
+path.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript" src="src/base.js"></script>
+    <script type="text/javascript" src="src/visualise.js"></script>
+    <script type="text/javascript">
+      streeVis.config = {direction: "top-bottom", file: ""};
+      streeVis.loadUrl = function(x) {
+      var url = document.getElementById('url');
+      var value = url.value;
+      if (!value) {return;}
+      streeVis.config.file = value;
+      streeVis.run();
+      url.value = "";
+      }
+    </script>
+    <form>
+    <input id="url" style="font-size:110%" size="60" onkeypress="if (event.keyCode == 13) {streeVis.loadUrl(); event.stopPropagation(); return false;} else {return true;}"/>
+    <input id="load" type="button" value="Load URL" onclick="streeVis.loadUrl()"></input>
+    <!-- <input id="files" type="file" accept=".json" action="streeVis.loadUrl()"/> -->
+    </form>
+    <hr>
+
+    <div id="body"/>
+  </body>
+</html>
+
+</body> </html>

@@ -1,0 +1,509 @@
+{
+  "stree": {
+    "relseq": {
+      "role": "equality",
+      "id": "77",
+      "$t": "=",
+      "content": {
+        "relation": {
+          "role": "equality",
+          "id": "24",
+          "$t": "="
+        }
+      },
+      "children": {
+        "fraction": {
+          "role": "division",
+          "id": "23",
+          "children": {
+            "number": {
+              "role": "integer",
+              "font": "normal",
+              "id": "0",
+              "$t": "1"
+            },
+            "infixop": {
+              "role": "implicit",
+              "id": "22",
+              "$t": "⁢",
+              "content": {
+                "operator": {
+                  "role": "multiplication",
+                  "id": "21",
+                  "$t": "⁢"
+                }
+              },
+              "children": {
+                "fenced": {
+                  "role": "leftright",
+                  "id": "20",
+                  "content": {
+                    "fence": [
+                      {
+                        "role": "open",
+                        "id": "1",
+                        "$t": "("
+                      },
+                      {
+                        "role": "close",
+                        "id": "10",
+                        "$t": ")"
+                      }
+                    ]
+                  },
+                  "children": {
+                    "infixop": {
+                      "role": "subtraction",
+                      "id": "19",
+                      "$t": "−",
+                      "content": {
+                        "operator": {
+                          "role": "subtraction",
+                          "id": "8",
+                          "$t": "−"
+                        }
+                      },
+                      "children": {
+                        "sqrt": {
+                          "role": "unknown",
+                          "id": "7",
+                          "children": {
+                            "infixop": {
+                              "role": "implicit",
+                              "id": "6",
+                              "$t": "⁢",
+                              "content": {
+                                "operator": {
+                                  "role": "multiplication",
+                                  "id": "5",
+                                  "$t": "⁢"
+                                }
+                              },
+                              "children": {
+                                "identifier": {
+                                  "role": "unknown",
+                                  "id": "2",
+                                  "$t": "ϕ"
+                                },
+                                "sqrt": {
+                                  "role": "unknown",
+                                  "id": "4",
+                                  "children": {
+                                    "number": {
+                                      "role": "integer",
+                                      "font": "normal",
+                                      "id": "3",
+                                      "$t": "5"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "identifier": {
+                          "role": "unknown",
+                          "id": "9",
+                          "$t": "ϕ"
+                        }
+                      }
+                    }
+                  }
+                },
+                "superscript": {
+                  "role": "latinletter",
+                  "id": "18",
+                  "children": {
+                    "identifier": {
+                      "role": "latinletter",
+                      "font": "italic",
+                      "id": "11",
+                      "$t": "e"
+                    },
+                    "infixop": {
+                      "role": "implicit",
+                      "id": "17",
+                      "$t": "⁢",
+                      "content": {
+                        "operator": {
+                          "role": "multiplication",
+                          "id": "16",
+                          "$t": "⁢"
+                        }
+                      },
+                      "children": {
+                        "fraction": {
+                          "role": "vulgar",
+                          "id": "14",
+                          "children": {
+                            "number": [
+                              {
+                                "role": "integer",
+                                "font": "normal",
+                                "id": "12",
+                                "$t": "2"
+                              },
+                              {
+                                "role": "integer",
+                                "font": "normal",
+                                "id": "13",
+                                "$t": "5"
+                              }
+                            ]
+                          }
+                        },
+                        "identifier": {
+                          "role": "greekletter",
+                          "font": "italic",
+                          "id": "15",
+                          "$t": "π"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "infixop": {
+          "role": "addition",
+          "id": "76",
+          "$t": "+",
+          "content": {
+            "operator": {
+              "role": "addition",
+              "id": "26",
+              "$t": "+"
+            }
+          },
+          "children": {
+            "number": {
+              "role": "integer",
+              "font": "normal",
+              "id": "25",
+              "$t": "1"
+            },
+            "fraction": {
+              "role": "division",
+              "id": "75",
+              "children": {
+                "superscript": {
+                  "role": "latinletter",
+                  "id": "34",
+                  "children": {
+                    "identifier": {
+                      "role": "latinletter",
+                      "font": "italic",
+                      "id": "27",
+                      "$t": "e"
+                    },
+                    "prefixop": {
+                      "role": "negative",
+                      "id": "33",
+                      "$t": "−",
+                      "content": {
+                        "operator": {
+                          "role": "subtraction",
+                          "id": "28",
+                          "$t": "−"
+                        }
+                      },
+                      "children": {
+                        "infixop": {
+                          "role": "implicit",
+                          "id": "32",
+                          "$t": "⁢",
+                          "content": {
+                            "operator": {
+                              "role": "multiplication",
+                              "id": "31",
+                              "$t": "⁢"
+                            }
+                          },
+                          "children": {
+                            "number": {
+                              "role": "integer",
+                              "font": "normal",
+                              "id": "29",
+                              "$t": "2"
+                            },
+                            "identifier": {
+                              "role": "greekletter",
+                              "font": "italic",
+                              "id": "30",
+                              "$t": "π"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "infixop": {
+                  "role": "addition",
+                  "id": "74",
+                  "$t": "+",
+                  "content": {
+                    "operator": {
+                      "role": "addition",
+                      "id": "36",
+                      "$t": "+"
+                    }
+                  },
+                  "children": {
+                    "number": {
+                      "role": "integer",
+                      "font": "normal",
+                      "id": "35",
+                      "$t": "1"
+                    },
+                    "fraction": {
+                      "role": "division",
+                      "id": "73",
+                      "children": {
+                        "superscript": {
+                          "role": "latinletter",
+                          "id": "44",
+                          "children": {
+                            "identifier": {
+                              "role": "latinletter",
+                              "font": "italic",
+                              "id": "37",
+                              "$t": "e"
+                            },
+                            "prefixop": {
+                              "role": "negative",
+                              "id": "43",
+                              "$t": "−",
+                              "content": {
+                                "operator": {
+                                  "role": "subtraction",
+                                  "id": "38",
+                                  "$t": "−"
+                                }
+                              },
+                              "children": {
+                                "infixop": {
+                                  "role": "implicit",
+                                  "id": "42",
+                                  "$t": "⁢",
+                                  "content": {
+                                    "operator": {
+                                      "role": "multiplication",
+                                      "id": "41",
+                                      "$t": "⁢"
+                                    }
+                                  },
+                                  "children": {
+                                    "number": {
+                                      "role": "integer",
+                                      "font": "normal",
+                                      "id": "39",
+                                      "$t": "4"
+                                    },
+                                    "identifier": {
+                                      "role": "greekletter",
+                                      "font": "italic",
+                                      "id": "40",
+                                      "$t": "π"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "infixop": {
+                          "role": "addition",
+                          "id": "72",
+                          "$t": "+",
+                          "content": {
+                            "operator": {
+                              "role": "addition",
+                              "id": "46",
+                              "$t": "+"
+                            }
+                          },
+                          "children": {
+                            "number": {
+                              "role": "integer",
+                              "font": "normal",
+                              "id": "45",
+                              "$t": "1"
+                            },
+                            "fraction": {
+                              "role": "division",
+                              "id": "71",
+                              "children": {
+                                "superscript": {
+                                  "role": "latinletter",
+                                  "id": "54",
+                                  "children": {
+                                    "identifier": {
+                                      "role": "latinletter",
+                                      "font": "italic",
+                                      "id": "47",
+                                      "$t": "e"
+                                    },
+                                    "prefixop": {
+                                      "role": "negative",
+                                      "id": "53",
+                                      "$t": "−",
+                                      "content": {
+                                        "operator": {
+                                          "role": "subtraction",
+                                          "id": "48",
+                                          "$t": "−"
+                                        }
+                                      },
+                                      "children": {
+                                        "infixop": {
+                                          "role": "implicit",
+                                          "id": "52",
+                                          "$t": "⁢",
+                                          "content": {
+                                            "operator": {
+                                              "role": "multiplication",
+                                              "id": "51",
+                                              "$t": "⁢"
+                                            }
+                                          },
+                                          "children": {
+                                            "number": {
+                                              "role": "integer",
+                                              "font": "normal",
+                                              "id": "49",
+                                              "$t": "6"
+                                            },
+                                            "identifier": {
+                                              "role": "greekletter",
+                                              "font": "italic",
+                                              "id": "50",
+                                              "$t": "π"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                "infixop": {
+                                  "role": "addition",
+                                  "id": "70",
+                                  "$t": "+",
+                                  "content": {
+                                    "operator": {
+                                      "role": "addition",
+                                      "id": "56",
+                                      "$t": "+"
+                                    }
+                                  },
+                                  "children": {
+                                    "number": {
+                                      "role": "integer",
+                                      "font": "normal",
+                                      "id": "55",
+                                      "$t": "1"
+                                    },
+                                    "fraction": {
+                                      "role": "division",
+                                      "id": "69",
+                                      "children": {
+                                        "superscript": {
+                                          "role": "latinletter",
+                                          "id": "64",
+                                          "children": {
+                                            "identifier": {
+                                              "role": "latinletter",
+                                              "font": "italic",
+                                              "id": "57",
+                                              "$t": "e"
+                                            },
+                                            "prefixop": {
+                                              "role": "negative",
+                                              "id": "63",
+                                              "$t": "−",
+                                              "content": {
+                                                "operator": {
+                                                  "role": "subtraction",
+                                                  "id": "58",
+                                                  "$t": "−"
+                                                }
+                                              },
+                                              "children": {
+                                                "infixop": {
+                                                  "role": "implicit",
+                                                  "id": "62",
+                                                  "$t": "⁢",
+                                                  "content": {
+                                                    "operator": {
+                                                      "role": "multiplication",
+                                                      "id": "61",
+                                                      "$t": "⁢"
+                                                    }
+                                                  },
+                                                  "children": {
+                                                    "number": {
+                                                      "role": "integer",
+                                                      "font": "normal",
+                                                      "id": "59",
+                                                      "$t": "8"
+                                                    },
+                                                    "identifier": {
+                                                      "role": "greekletter",
+                                                      "font": "italic",
+                                                      "id": "60",
+                                                      "$t": "π"
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        },
+                                        "infixop": {
+                                          "role": "addition",
+                                          "id": "68",
+                                          "$t": "+",
+                                          "content": {
+                                            "operator": {
+                                              "role": "addition",
+                                              "id": "66",
+                                              "$t": "+"
+                                            }
+                                          },
+                                          "children": {
+                                            "number": {
+                                              "role": "integer",
+                                              "font": "normal",
+                                              "id": "65",
+                                              "$t": "1"
+                                            },
+                                            "punctuation": {
+                                              "role": "ellipsis",
+                                              "id": "67",
+                                              "$t": "…"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "stree": {
+    "punctuated": {
+      "role": "text",
+      "id": "5",
+      "content": {
+        "punctuation": [
+          {
+            "role": "dummy",
+            "id": "3",
+            "$t": "⁣"
+          },
+          {
+            "role": "dummy",
+            "id": "4",
+            "$t": "⁣"
+          }
+        ]
+      },
+      "children": {
+        "text": [
+          {
+            "role": "unknown",
+            "font": "normal",
+            "id": "0",
+            "$t": "hello"
+          },
+          {
+            "role": "unknown",
+            "font": "normal",
+            "id": "2",
+            "$t": "here"
+          }
+        ],
+        "identifier": {
+          "role": "latinletter",
+          "font": "italic",
+          "id": "1",
+          "$t": "a"
+        }
+      }
+    }
+  }
+}

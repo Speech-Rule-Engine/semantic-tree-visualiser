@@ -1,0 +1,134 @@
+{
+  "stree": {
+    "relseq": {
+      "role": "equality",
+      "id": "19",
+      "$t": "=",
+      "content": {
+        "relation": {
+          "role": "equality",
+          "id": "12",
+          "$t": "="
+        }
+      },
+      "children": {
+        "bigop": {
+          "role": "sum",
+          "id": "18",
+          "content": {
+            "largeop": {
+              "role": "sum",
+              "id": "0",
+              "$t": "∑"
+            }
+          },
+          "children": {
+            "limboth": {
+              "role": "sum",
+              "id": "6",
+              "children": {
+                "largeop": {
+                  "role": "sum",
+                  "id": "0",
+                  "$t": "∑"
+                },
+                "relseq": {
+                  "role": "equality",
+                  "id": "4",
+                  "$t": "=",
+                  "content": {
+                    "relation": {
+                      "role": "equality",
+                      "id": "2",
+                      "$t": "="
+                    }
+                  },
+                  "children": {
+                    "identifier": {
+                      "role": "latinletter",
+                      "font": "italic",
+                      "id": "1",
+                      "$t": "n"
+                    },
+                    "number": {
+                      "role": "integer",
+                      "font": "normal",
+                      "id": "3",
+                      "$t": "1"
+                    }
+                  }
+                },
+                "identifier": {
+                  "role": "unknown",
+                  "font": "normal",
+                  "id": "5",
+                  "$t": "∞"
+                }
+              }
+            },
+            "fraction": {
+              "role": "division",
+              "id": "11",
+              "children": {
+                "number": {
+                  "role": "integer",
+                  "font": "normal",
+                  "id": "7",
+                  "$t": "1"
+                },
+                "superscript": {
+                  "role": "latinletter",
+                  "id": "10",
+                  "children": {
+                    "identifier": {
+                      "role": "latinletter",
+                      "font": "italic",
+                      "id": "8",
+                      "$t": "n"
+                    },
+                    "number": {
+                      "role": "integer",
+                      "font": "normal",
+                      "id": "9",
+                      "$t": "2"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "fraction": {
+          "role": "division",
+          "id": "17",
+          "children": {
+            "superscript": {
+              "role": "greekletter",
+              "id": "15",
+              "children": {
+                "identifier": {
+                  "role": "greekletter",
+                  "font": "italic",
+                  "id": "13",
+                  "$t": "π"
+                },
+                "number": {
+                  "role": "integer",
+                  "font": "normal",
+                  "id": "14",
+                  "$t": "2"
+                }
+              }
+            },
+            "number": {
+              "role": "integer",
+              "font": "normal",
+              "id": "16",
+              "$t": "6"
+            }
+          }
+        }
+      }
+    }
+  }
+}
