@@ -44,12 +44,12 @@ streeVis = function() {
   this.diagonal = d3.svg.diagonal()
     .projection(goog.bind(function(d) { return [this.orientX(d), this.orientY(d)]; }, this));
 
-  this.svg = d3.select("#body").append("svg:svg");
+  this.svg = d3.select('#body').append('svg:svg');
   this.vis = this.svg
-    .attr("width", this.w + this.m[1] + this.m[3])
-    .attr("height", this.h + this.m[0] + this.m[2])
-    .append("svg:g")
-    .attr("transform", "translate(" + this.m[3] + "," + this.m[0] + ")");
+    .attr('width', this.w + this.m[1] + this.m[3])
+    .attr('height', this.h + this.m[0] + this.m[2])
+    .append('svg:g')
+    .attr('transform', 'translate(' + this.m[3] + ',' + this.m[0] + ')');
 
 };
 
@@ -70,7 +70,7 @@ streeVis.prototype.orientation = function() {
     streeVis.prototype.orientX = function(source, zero) {
       return zero ? source.x0 : source.x;
     };
-    
+
     streeVis.prototype.orientY = function(source, zero) {
       return zero ? source.y0 : source.y;
     };
@@ -81,15 +81,15 @@ streeVis.prototype.orientation = function() {
 
     this.xFor = 0;
     this.xAft = -3;
-    this.yFor = "-.5em";
-    this.yAft = "1.2em";
+    this.yFor = '-.5em';
+    this.yAft = '1.2em';
     this.tree = d3.layout.tree().size([this.w, this.h]);
 
 } else {
     streeVis.prototype.orientX = function(source, zero) {
     return zero ? source.y0 : source.y;
-  };
-  
+    };
+
   streeVis.prototype.orientY = function(source, zero) {
     return zero ? source.x0 : source.x;
   };
@@ -100,11 +100,11 @@ streeVis.prototype.orientation = function() {
 
   this.xFor = -10;
   this.xAft = 10;
-  this.yFor = "-.1em";
-  this.yAft = "0.35em";
+  this.yFor = '-.1em';
+  this.yAft = '0.35em';
   this.tree = d3.layout.tree().size([this.h, this.w]);
 }
-  
+
 };
 
 streeVis.prototype.newOrientation = function(direction) {
@@ -121,7 +121,7 @@ streeVis.color = {
   CONTENT: 'green',
   SPECIAL: 'magenta'
 };
-  
+
 
 streeVis.getColor = function(node) {
   if (!node.children && !node._children) return streeVis.color.LEAF;
@@ -132,12 +132,12 @@ streeVis.getColor = function(node) {
 
 
 streeVis.special = {
-  fraction: "/",
-  sqrt: "\u221A",
-  root: "\u221A",
-  superscript: "\u25FD\u02D9",
-  subscript: "\u25FD.",
-  subsup:"\u25FD:"
+  fraction: '/',
+  sqrt: '\u221A',
+  root: '\u221A',
+  superscript: '\u25FD\u02D9',
+  subscript: '\u25FD.',
+  subsup:'\u25FD:'
 };
 
 streeVis.getContent = function(node) {
@@ -176,7 +176,7 @@ streeVis.prototype.prepareNode = function(type, node) {
   }
   node.type = type;
   if (node.children) {
-    node.children = this.prepare(node.children); 
+    node.children = this.prepare(node.children);
   }
   if (node.content) {
     node.content = this.prepare(node.content);
@@ -194,80 +194,88 @@ streeVis.prototype.update = function(source) {
   // nodes.forEach(function(d) { d.y = d.depth * 180; });
 
   // Update the nodes…
-  var node = this.vis.selectAll("g.node")
+  var node = this.vis.selectAll('g.node')
       .data(nodes, function(d) { return d.id || (d.id = ++i); });
-  
+
   // Enter any new nodes at the parent's previous position.
-  var nodeEnter = node.enter().append("svg:g")
-      .attr("class", "node")
-        .attr("transform", goog.bind(function(d) { return "translate(" + this.orientX(source, true) + "," +
-                                                   this.orientY(source, true) + ")"; }, this))
-        .on("click", goog.bind(function(d) { streeVis.toggle(d); this.update(d); }, this));
+  var nodeEnter = node.enter().append('svg:g')
+      .attr('class', 'node')
+        .attr('transform', goog.bind(function(d) {
+          return 'translate(' + this.orientX(source, true) + ',' +
+            this.orientY(source, true) + ')'; }, this))
+        .on('click', goog.bind(function(d) {
+          streeVis.toggle(d); this.update(d); }, this));
 
-  nodeEnter.append("svg:circle")
-      .attr("r", 1e-6)
-      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+  nodeEnter.append('svg:circle')
+      .attr('r', 1e-6)
+    .style('fill', function(d) {
+      return d._children ? 'lightsteelblue' : '#fff'; });
 
-  nodeEnter.append("svg:title")
+  nodeEnter.append('svg:title')
       .text(function(d) { return d.type + ': ' + d.role; });
 
-  nodeEnter.append("svg:text")
-    .attr("x", goog.bind(function(d) { return d.children || d._children ? this.xFor : this.xAft; }, this))
-    .attr("dy", goog.bind(function(d) { return d.children || d._children ? this.yFor : this.yAft; }, this))
-    .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+  nodeEnter.append('svg:text')
+    .attr('x', goog.bind(function(d) {
+      return d.children || d._children ? this.xFor : this.xAft; }, this))
+    .attr('dy', goog.bind(function(d) {
+      return d.children || d._children ? this.yFor : this.yAft; }, this))
+    .attr('text-anchor', function(d) {
+      return d.children || d._children ? 'end' : 'start'; })
     .text(function(d) { return streeVis.getContent(d); })
-    .style("font-size", '20')
-    .style("fill", function (d) { return streeVis.getColor(d); });
-  
-  
+    .style('font-size', '20')
+    .style('fill', function(d) { return streeVis.getColor(d); });
+
+
   // Transition nodes to their new position.
   var nodeUpdate = node.transition()
       .duration(duration)
-        .attr("transform", goog.bind(function(d) { return "translate(" + this.orientX(d) + "," + this.orientY(d) + ")"; }, this));
+        .attr('transform', goog.bind(function(d) {
+          return 'translate(' + this.orientX(d) + ',' + this.orientY(d) + ')'; }, this));
 
-  nodeUpdate.select("circle")
-      .attr("r", 4.5)
-      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+  nodeUpdate.select('circle')
+      .attr('r', 4.5)
+      .style('fill', function(d) { return d._children ? 'lightsteelblue' : '#fff'; });
 
-  nodeUpdate.select("text")
-      .style("fill-opacity", 1);
+  nodeUpdate.select('text')
+      .style('fill-opacity', 1);
 
   // Transition exiting nodes to the parent's new position.
   var nodeExit = node.exit().transition()
       .duration(duration)
-        .attr("transform", goog.bind(function(d) { return "translate(" + this.orientX(source) + "," + this.orientY(source) + ")"; }, this))
+        .attr('transform', goog.bind(function(d) {
+          return 'translate(' + this.orientX(source) + ',' + this.orientY(source) + ')'; }, this))
       .remove();
 
-  nodeExit.select("circle")
-      .attr("r", 1e-6);
+  nodeExit.select('circle')
+      .attr('r', 1e-6);
 
-  nodeExit.select("text")
-      .style("fill-opacity", 1e-6);
+  nodeExit.select('text')
+      .style('fill-opacity', 1e-6);
 
   // Update the links…
-  var link = this.vis.selectAll("path.link")
+  var link = this.vis.selectAll('path.link')
       .data(this.tree.links(nodes), function(d) { return d.target.id; });
 
   // Enter any new links at the parent's previous position.
-  link.enter().insert("svg:path", "g")
-      .attr("class", "link")
-    .attr("d", goog.bind(function(d) {
+  link.enter().insert('svg:path', 'g')
+      .attr('class', 'link')
+    .attr('d', goog.bind(function(d) {
         var o = {x: source.x0, y: source.y0};
       return this.diagonal({source: o, target: o});
       }, this))
     .transition()
       .duration(duration)
-    .attr("d", goog.bind(this.diagonal, this));
+    .attr('d', goog.bind(this.diagonal, this));
 
   // Transition links to their new position.
   link.transition()
       .duration(duration)
-    .attr("d", goog.bind(this.diagonal, this));
+    .attr('d', goog.bind(this.diagonal, this));
 
   // Transition exiting nodes to the parent's new position.
   link.exit().transition()
       .duration(duration)
-    .attr("d", goog.bind(function(d) {
+    .attr('d', goog.bind(function(d) {
         var o = {x: source.x, y: source.y};
       return this.diagonal({source: o, target: o});
       }, this))
