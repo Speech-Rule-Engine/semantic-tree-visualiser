@@ -61,12 +61,14 @@ streeVis = function() {
 
 /**
  * Base configurations.
- * @type {Object.<string, string>}
+ * @enum {string|boolean}
  */
 streeVis.config = {
   url: 'simple.json',
-  // direction: 'left-right'
-  direction: 'top-bottom'
+  direction: 'top-bottom',
+  sre: './mathjax-sre.js',
+  expanded: false,
+  script: null
 };
 
 
@@ -120,6 +122,9 @@ streeVis.prototype.newOrientation = function(direction) {
 };
 
 
+/**
+ * @enum {string}
+ */
 streeVis.color = {
   LEAF: 'red',
   BRANCH: 'blue',
@@ -136,6 +141,9 @@ streeVis.getColor = function(node) {
 };
 
 
+/**
+ * @enum {string}
+ */
 streeVis.special = {
   fraction: '/',
   sqrt: '\u221A',
@@ -171,7 +179,7 @@ streeVis.prototype.prepare = function(tree) {
   return snodes;
 };
 
-streeVis.prototype.prepareNode = function(type, node) {
+streeVis.prototype.prepareNode = function(node) {
   if (!node.id) {
     var snodes = [];
     for (var i = 0, n; n = node[i]; i++) {
@@ -334,14 +342,14 @@ streeVis.prototype.expand = function(d) {
     d.children = d._children;
     d._children = null;
     this.states[d.id] = true;
+    this.update(d);
+    d.children.forEach(goog.bind(this.expand, this));
   }
-  d.children.forEach(goog.bind(this.expand, this));
 };
 
 
 streeVis.prototype.expandAll = function() {
   this.expand(this.stree.stree);
-  this.update(this.stree);
 };
 
 
@@ -350,17 +358,17 @@ streeVis.prototype.collapse = function(d) {
     return;
   }
   if (d.children) {
+    d.children.forEach(goog.bind(this.collapse, this));
     d._children = d.children;
     d.children = null;
     this.states[d.id] = false;
+    this.update(d);
   }
-  d._children.forEach(goog.bind(this.collapse, this));
 };
 
 
 streeVis.prototype.collapseAll = function() {
   this.collapse(this.stree.stree);
-  this.update(this.stree);
 };
 
 
@@ -370,10 +378,11 @@ streeVis.prototype.visualiseJson = function(json) {
   this.stree.x0 = this.h / 2;
   this.stree.y0 = 0;
 
-  this.stree.stree = this.prepare(this.stree.stree)[0];
-  this.rerun ? this.toggleSome(this.stree.stree) :
+  if (this.rerun) {
+    this.toggleSome(this.stree.stree);
+  } else if (!streeVis.config.expanded) {
     this.toggleAll(this.stree.stree);
-
+  };
   this.update(this.stree);
 };
 
@@ -474,38 +483,13 @@ streeVis.translateTex = function() {
   var object = {};
   streeVis.treeHTML(stree.childNodes[0], object);
   object = {stree: object};
-  console.log(JSON.stringify(object));
+  streeVis.config.json = object;
+  streeVis.config.url = '';
+  streeVis.run();
 };
 
 
-//Recursively loop through DOM elements and assign properties to object
-streeVis.treeHTML_old = function(element, object) {
-  object["type"] = element.nodeName;
-  var nodeList = element.childNodes;
-  if (nodeList != null) {
-    if (nodeList.length) {
-      object["content"] = [];
-      for (var i = 0; i < nodeList.length; i++) {
-        if (nodeList[i].nodeType == 3) {
-          object["content"].push(nodeList[i].nodeValue);
-        } else {
-          object["content"].push({});
-          streeVis.treeHTML(nodeList[i], object["content"][object["content"].length -1]);
-        }
-      }
-    }
-  }
-  if (element.attributes != null) {
-    if (element.attributes.length) {
-      object["attributes"] = {};
-      for (var i = 0; i < element.attributes.length; i++) {
-        object["attributes"][element.attributes[i].nodeName] = element.attributes[i].nodeValue;
-      }
-    }
-  }
-};
-
-
+// This will be replaced by the dedicated SRE function.
 streeVis.treeHTML = function(element, object) {
   console.log(element);
   object["type"] = element.nodeName;
@@ -544,4 +528,21 @@ streeVis.addChildren = function(name, element, object) {
       object[name].push(newObject);
     }
   }
+};
+
+
+streeVis.removeLocalLibrary = function() {
+  if (streeVis.config.script) {
+    streeVis.config.script.parentNode.removeChild(streeVis.config.script);
+  }
+};
+
+
+streeVis.loadLocalLibrary = function() {
+  streeVis.removeLocalLibrary();
+  var scr = document.createElement('script');
+  scr.type = 'text/javascript';
+  scr.src = streeVis.config.sre;
+  document.head ? document.head.appendChild(scr) :
+    document.body.appendChild(scr);
 };

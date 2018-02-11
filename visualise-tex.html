@@ -32,6 +32,9 @@ path.link {
   <body>
     <script type="text/javascript" src="src/base.js"></script>
     <script type="text/javascript" src="src/visualise.js"></script>
+    <script type="text/javascript">
+      streeVis.config.expanded = true;
+    </script>
     <script src="https://rawgit.com/mathjax/MathJax/master/MathJax.js?config=TeX-AMS_HTML-full"></script>
     <form>
       <table border="0" cellpadding="0" cellspacing="2">
@@ -54,7 +57,10 @@ path.link {
               <textarea id="input" rows="10" cols="63" style="font-size:110%"></textarea>  <!-- onkeypress="Lab.CheckKey(event)"  -->
           </td>
         <td align="bottom">
-            <input align="bottom" id="translate" type="button" value="Translate" onclick="streeVis.translateTex()"></input>
+              <input align="bottom" id="translate" type="button" value="Translate" onclick="streeVis.translateTex()"></input>
+        </td>
+        <td align="bottom">
+            <input align="bottom" id="load local" type="button" value="Load Local" onclick="streeVis.loadLocalLibrary()"></input>
         </td>
       </tr>
 </table>
