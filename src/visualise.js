@@ -33,23 +33,28 @@
  * @constructor
  */
 streeVis = function() {
-  this.file =  streeVis.config.file;
-  this.direction =  streeVis.config.direction;
+  this.url = streeVis.config.url;
+  this.json = streeVis.config.json;
+  this.direction = streeVis.config.direction;
   this.m = this.w = this.h = null;
   this.xFor = this.xAft = this.yFor = this.yAft = null;
   this.stree = null;
   this.tree = null;
+  this.rerun = false;
+  this.legacy = false;
   this.orientation();
 
+  this.states = {};
+  
   this.diagonal = d3.svg.diagonal()
     .projection(goog.bind(function(d) { return [this.orientX(d), this.orientY(d)]; }, this));
 
-  this.svg = d3.select("#body").append("svg:svg");
+  this.svg = d3.select('#body').append('svg:svg');
   this.vis = this.svg
-    .attr("width", this.w + this.m[1] + this.m[3])
-    .attr("height", this.h + this.m[0] + this.m[2])
-    .append("svg:g")
-    .attr("transform", "translate(" + this.m[3] + "," + this.m[0] + ")");
+    .attr('width', this.w + this.m[1] + this.m[3])
+    .attr('height', this.h + this.m[0] + this.m[2])
+    .append('svg:g')
+    .attr('transform', 'translate(' + this.m[3] + ',' + this.m[0] + ')');
 
 };
 
@@ -57,11 +62,14 @@ streeVis = function() {
 
 /**
  * Base configurations.
- * @type {Object.<string, string>}
+ * @enum {string|boolean}
  */
 streeVis.config = {
-  file: 'simple.json',
-  direction: 'left-right'
+  url: 'simple.json',
+  direction: 'top-bottom',
+  sre: './mathjax-sre.js',
+  expanded: false,
+  script: null
 };
 
 
@@ -70,7 +78,7 @@ streeVis.prototype.orientation = function() {
     streeVis.prototype.orientX = function(source, zero) {
       return zero ? source.x0 : source.x;
     };
-    
+
     streeVis.prototype.orientY = function(source, zero) {
       return zero ? source.y0 : source.y;
     };
@@ -81,15 +89,15 @@ streeVis.prototype.orientation = function() {
 
     this.xFor = 0;
     this.xAft = -3;
-    this.yFor = "-.5em";
-    this.yAft = "1.2em";
+    this.yFor = '-.5em';
+    this.yAft = '1.2em';
     this.tree = d3.layout.tree().size([this.w, this.h]);
 
 } else {
     streeVis.prototype.orientX = function(source, zero) {
     return zero ? source.y0 : source.y;
-  };
-  
+    };
+
   streeVis.prototype.orientY = function(source, zero) {
     return zero ? source.x0 : source.x;
   };
@@ -100,11 +108,11 @@ streeVis.prototype.orientation = function() {
 
   this.xFor = -10;
   this.xAft = 10;
-  this.yFor = "-.1em";
-  this.yAft = "0.35em";
+  this.yFor = '-.1em';
+  this.yAft = '0.35em';
   this.tree = d3.layout.tree().size([this.h, this.w]);
 }
-  
+
 };
 
 streeVis.prototype.newOrientation = function(direction) {
@@ -115,13 +123,16 @@ streeVis.prototype.newOrientation = function(direction) {
 };
 
 
+/**
+ * @enum {string}
+ */
 streeVis.color = {
   LEAF: 'red',
   BRANCH: 'blue',
   CONTENT: 'green',
   SPECIAL: 'magenta'
 };
-  
+
 
 streeVis.getColor = function(node) {
   if (!node.children && !node._children) return streeVis.color.LEAF;
@@ -131,13 +142,16 @@ streeVis.getColor = function(node) {
 };
 
 
+/**
+ * @enum {string}
+ */
 streeVis.special = {
-  fraction: "/",
-  sqrt: "\u221A",
-  root: "\u221A",
-  superscript: "\u25FD\u02D9",
-  subscript: "\u25FD.",
-  subsup:"\u25FD:"
+  fraction: '/',
+  sqrt: '\u221A',
+  root: '\u221A',
+  superscript: '\u25FD\u02D9',
+  subscript: '\u25FD.',
+  subsup:'\u25FD:'
 };
 
 streeVis.getContent = function(node) {
@@ -154,6 +168,7 @@ streeVis.getContent = function(node) {
 };
 
 
+// For the legacy format
 streeVis.prototype.prepare = function(tree) {
   var snodes = [];
   for (var node in tree) {
@@ -176,13 +191,14 @@ streeVis.prototype.prepareNode = function(type, node) {
   }
   node.type = type;
   if (node.children) {
-    node.children = this.prepare(node.children); 
+    node.children = this.prepare(node.children);
   }
   if (node.content) {
     node.content = this.prepare(node.content);
   }
   return [node];
 };
+// End legacy
 
 streeVis.prototype.update = function(source) {
   var duration = d3.event && d3.event.altKey ? 5000 : 500;
@@ -194,85 +210,92 @@ streeVis.prototype.update = function(source) {
   // nodes.forEach(function(d) { d.y = d.depth * 180; });
 
   // Update the nodes…
-  var node = this.vis.selectAll("g.node")
+  var node = this.vis.selectAll('g.node')
       .data(nodes, function(d) { return d.id || (d.id = ++i); });
-  
+
   // Enter any new nodes at the parent's previous position.
-  var nodeEnter = node.enter().append("svg:g")
-      .attr("class", "node")
-        .attr("transform", goog.bind(function(d) { return "translate(" + this.orientX(source, true) + "," +
-                                                   this.orientY(source, true) + ")"; }, this))
-        .on("click", goog.bind(function(d) { streeVis.toggle(d); this.update(d); }, this));
+  var nodeEnter = node.enter().append('svg:g')
+      .attr('class', 'node')
+        .attr('transform', goog.bind(function(d) {
+          return 'translate(' + this.orientX(source, true) + ',' +
+            this.orientY(source, true) + ')'; }, this))
+        .on('click', goog.bind(function(d) {
+          this.toggle(d); this.update(d); }, this));
 
-  nodeEnter.append("svg:circle")
-      .attr("r", 1e-6)
-      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+  nodeEnter.append('svg:circle')
+      .attr('r', 1e-6)
+    .style('fill', function(d) {
+      return d._children ? 'lightsteelblue' : '#fff'; });
 
-  nodeEnter.append("svg:title")
+  nodeEnter.append('svg:title')
       .text(function(d) { return d.type + ': ' + d.role; });
 
-  nodeEnter.append("svg:text")
-    .attr("x", goog.bind(function(d) { return d.children || d._children ? this.xFor : this.xAft; }, this))
-    .attr("dy", goog.bind(function(d) { return d.children || d._children ? this.yFor : this.yAft; }, this))
-    .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+  nodeEnter.append('svg:text')
+    .attr('x', goog.bind(function(d) {
+      return d.children || d._children ? this.xFor : this.xAft; }, this))
+    .attr('dy', goog.bind(function(d) {
+      return d.children || d._children ? this.yFor : this.yAft; }, this))
+    .attr('text-anchor', function(d) {
+      return d.children || d._children ? 'end' : 'start'; })
     .text(function(d) { return streeVis.getContent(d); })
-    .style("font-size", '20')
-    .style("fill", function (d) { return streeVis.getColor(d); });
-  
-  
+    .style('font-size', '20')
+    .style('fill', function(d) { return streeVis.getColor(d); });
+
+
   // Transition nodes to their new position.
   var nodeUpdate = node.transition()
       .duration(duration)
-        .attr("transform", goog.bind(function(d) { return "translate(" + this.orientX(d) + "," + this.orientY(d) + ")"; }, this));
+        .attr('transform', goog.bind(function(d) {
+          return 'translate(' + this.orientX(d) + ',' + this.orientY(d) + ')'; }, this));
 
-  nodeUpdate.select("circle")
-      .attr("r", 4.5)
-      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+  nodeUpdate.select('circle')
+      .attr('r', 4.5)
+      .style('fill', function(d) { return d._children ? 'lightsteelblue' : '#fff'; });
 
-  nodeUpdate.select("text")
-      .style("fill-opacity", 1);
+  nodeUpdate.select('text')
+      .style('fill-opacity', 1);
 
   // Transition exiting nodes to the parent's new position.
   var nodeExit = node.exit().transition()
       .duration(duration)
-        .attr("transform", goog.bind(function(d) { return "translate(" + this.orientX(source) + "," + this.orientY(source) + ")"; }, this))
+        .attr('transform', goog.bind(function(d) {
+          return 'translate(' + this.orientX(source) + ',' + this.orientY(source) + ')'; }, this))
       .remove();
 
-  nodeExit.select("circle")
-      .attr("r", 1e-6);
+  nodeExit.select('circle')
+      .attr('r', 1e-6);
 
-  nodeExit.select("text")
-      .style("fill-opacity", 1e-6);
+  nodeExit.select('text')
+      .style('fill-opacity', 1e-6);
 
   // Update the links…
-  var link = this.vis.selectAll("path.link")
+  var link = this.vis.selectAll('path.link')
       .data(this.tree.links(nodes), function(d) { return d.target.id; });
 
   // Enter any new links at the parent's previous position.
-  link.enter().insert("svg:path", "g")
-      .attr("class", "link")
-    .attr("d", goog.bind(function(d) {
+  link.enter().insert('svg:path', 'g')
+      .attr('class', 'link')
+    .attr('d', goog.bind(function(d) {
         var o = {x: source.x0, y: source.y0};
       return this.diagonal({source: o, target: o});
       }, this))
     .transition()
       .duration(duration)
-    .attr("d", goog.bind(this.diagonal, this));
+    .attr('d', goog.bind(this.diagonal, this));
 
   // Transition links to their new position.
   link.transition()
       .duration(duration)
-    .attr("d", goog.bind(this.diagonal, this));
+    .attr('d', goog.bind(this.diagonal, this));
 
   // Transition exiting nodes to the parent's new position.
   link.exit().transition()
       .duration(duration)
-    .attr("d", goog.bind(function(d) {
+    .attr('d', goog.bind(function(d) {
         var o = {x: source.x, y: source.y};
       return this.diagonal({source: o, target: o});
       }, this))
       .remove();
-
   // Stash the old positions for transition.
   nodes.forEach(function(d) {
     d.x0 = d.x;
@@ -280,8 +303,9 @@ streeVis.prototype.update = function(source) {
   });
 };
 
+
 // Toggle children.
-streeVis.toggle = function(d) {
+streeVis.prototype.toggle = function(d, state) {
   if (d.children) {
     d._children = d.children;
     d.children = null;
@@ -289,32 +313,110 @@ streeVis.toggle = function(d) {
     d.children = d._children;
     d._children = null;
   }
+  this.states[d.id] = !!d.children;
 };
 
-streeVis.prototype.init = function() {
-  d3.json(this.file, goog.bind(function(json) {
-    if (!json) return;
-    this.stree = json;
-    this.stree.x0 = this.h / 2;
-    this.stree.y0 = 0;
 
-  function toggleAll(d) {
-    if (d.children) {
-      d.children.forEach(toggleAll);
-      streeVis.toggle(d);
-    }
+streeVis.prototype.toggleAll = function(d) {
+  if (d.children) {
+    d.children.forEach(goog.bind(this.toggleAll, this));
+    this.toggle(d);
   }
+};
 
+
+streeVis.prototype.toggleSome = function(d) {
+  if (this.states[d.id]) {
+    if (d._children) {
+      d.children = d._children;
+      d._children = null;
+    }
+    d.children.forEach(goog.bind(this.toggleSome, this));
+  } else {
+    this.toggleAll(d);
+  }
+};
+
+
+streeVis.prototype.expand = function(d) {
+  if (!d.children && !d._children)  {
+    return;
+  }
+  if (d._children) {
+    d.children = d._children;
+    d._children = null;
+    this.states[d.id] = true;
+    this.update(d);
+    d.children.forEach(goog.bind(this.expand, this));
+  }
+};
+
+
+streeVis.prototype.expandAll = function() {
+  this.expand(this.stree.stree);
+};
+
+
+streeVis.prototype.collapse = function(d) {
+  if (!d.children && !d._children)  {
+    return;
+  }
+  if (d.children) {
+    d.children.forEach(goog.bind(this.collapse, this));
+    d._children = d.children;
+    d.children = null;
+    this.states[d.id] = false;
+    this.update(d);
+  }
+};
+
+
+streeVis.prototype.collapseAll = function() {
+  this.collapse(this.stree.stree);
+};
+
+
+streeVis.prototype.setStates = function(node) {
+  if (node.children) {
+    node.children.forEach(goog.bind(this.setStates, this));
+    this.states[node.id] = true;
+  }
+};
+
+streeVis.prototype.visualiseJson = function(json) {
+  if (!json) return;
+  this.stree = JSON.parse(JSON.stringify(json));
+  this.stree.x0 = this.h / 2;
+  this.stree.y0 = 0;
+
+  // Legacy only!
+  if (this.legacy) {
     this.stree.stree = this.prepare(this.stree.stree)[0];
-    toggleAll(this.stree.stree);
+  }
+  
+  if (this.rerun) {
+    this.toggleSome(this.stree.stree);
+  } else if (!streeVis.config.expanded) {
+    this.toggleAll(this.stree.stree);
+  } else {
+    this.setStates(this.stree.stree);
+  }
+  this.update(this.stree);
+};
 
-    this.update(this.stree);
-  }, this));
+
+streeVis.prototype.init = function() {
+  this.url ? 
+    d3.json(this.url, goog.bind(this.visualiseJson, this)) :
+    this.visualiseJson(this.json);
 };
 
 streeVis.currentSVG = null;
 
-streeVis.run = function() {
+streeVis.run = function(option) {
+  option = option || {};
+  var states = (option.rerun && streeVis.currentSVG) ?
+      streeVis.currentSVG.states : {};
   if (streeVis.currentSVG && streeVis.currentSVG.svg) {
     var svg = streeVis.currentSVG.svg[0][0];
     if (svg.parentNode) {
@@ -323,5 +425,142 @@ streeVis.run = function() {
     }
   }
   streeVis.currentSVG = new streeVis();
+  streeVis.currentSVG.legacy = !!option.legacy;
+  streeVis.currentSVG.states = states;
+  streeVis.currentSVG.rerun = option.rerun;
   streeVis.currentSVG.init();
+};
+
+
+streeVis.changeOrientation = function() {
+  if (streeVis.config.direction === "top-bottom") {
+    streeVis.config.direction = "left-right";
+  } else {
+    streeVis.config.direction = "top-bottom";
+  }
+  streeVis.currentSVG ?
+    streeVis.run({rerun: true, legacy: streeVis.currentSVG.legacy}) :
+  streeVis.run({rerun: true});
+};
+
+
+streeVis.expandAll = function() {
+  if (streeVis.currentSVG) {
+    streeVis.currentSVG.expandAll();
+  }
+};
+
+
+streeVis.collapseAll = function() {
+  if (streeVis.currentSVG) {
+    streeVis.currentSVG.collapseAll();
+  }
+};
+
+
+streeVis.loadUrl = function(legacy) {
+  var url = document.getElementById('url');
+  var value = url.value;
+  if (!value) {return;}
+  streeVis.config.json = null;
+  streeVis.config.url = value;
+  streeVis.run({legacy: legacy});
+  url.value = "";
+};
+
+
+
+streeVis.handleFileSelect = function(evt, legacy) {
+  var files = evt.target.files; // FileList object
+  // files is a FileList of File objects. List some properties.
+  var reader = new FileReader();
+  var json = null;
+  reader.onload = function(f) {
+    json = JSON.parse(f.target.result);
+    streeVis.config.json = json;
+    streeVis.config.url = '';
+    streeVis.run({legacy: legacy});
+  };
+  
+  reader.readAsText(files[0]);
+  // var output = [];
+  // document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+};
+        
+streeVis.translateTex = function() {
+  try {
+    var jax = MathJax.InputJax.TeX.Parse(window.input.value).mml();
+  } catch(err) {
+    if (!err.texError) {throw err;}
+    console.log('The following error has occurred: ' + err);
+    return;
+  }
+  if (jax.inferred) {
+    jax = MathJax.ElementJax.mml.apply(MathJax.ElementJax, jax.data);
+  } else {
+    jax = MathJax.ElementJax.mml(jax);
+  }
+  var mml = jax.root.toMathML();
+  var stree = sre.System.getInstance().toSemantic(mml);
+  var object = {};
+  streeVis.treeHTML(stree.childNodes[0], object);
+  object = {stree: object};
+  streeVis.config.json = object;
+  streeVis.config.url = '';
+  streeVis.run();
+};
+
+
+// This will be replaced by the dedicated SRE function.
+streeVis.treeHTML = function(element, object) {
+  object["type"] = element.nodeName;
+  var attributes = element.attributes;
+  for (var i = 0; i < attributes.length; i++) {
+    object[attributes[i].nodeName] = attributes[i].nodeValue;
+  }
+  var nodeList = element.childNodes;
+  if (nodeList != null) {
+    if (nodeList.length) {
+      for (var i = 0; i < nodeList.length; i++) {
+        var node = nodeList[i];
+        if (node.nodeType == 3) {
+          object['$t'] = object['$t'] || '';
+          object["$t"] += node.nodeValue;
+          continue;
+        }
+        streeVis.addChildren('children', node, object);
+        streeVis.addChildren('content', node, object);
+      }
+    }
+  }
+};
+
+
+streeVis.addChildren = function(name, element, object) {
+  if (element.nodeName === name) {
+    object[name] = object[name] || [];
+    var children = element.childNodes;
+    for (var j = 0, child; child = children[j]; j++) {
+      var newObject = {};
+      streeVis.treeHTML(child, newObject);
+      object[name].push(newObject);
+    }
+  }
+};
+
+
+streeVis.removeLocalLibrary = function() {
+  if (streeVis.config.script) {
+    streeVis.config.script.parentNode.removeChild(streeVis.config.script);
+  }
+};
+
+
+streeVis.loadLocalLibrary = function() {
+  streeVis.removeLocalLibrary();
+  var scr = document.createElement('script');
+  scr.type = 'text/javascript';
+  scr.src = streeVis.config.sre;
+  document.head ? document.head.appendChild(scr) :
+    document.body.appendChild(scr);
 };

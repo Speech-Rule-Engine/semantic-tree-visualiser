@@ -33,25 +33,43 @@ path.link {
     <script type="text/javascript" src="src/base.js"></script>
     <script type="text/javascript" src="src/visualise.js"></script>
     <script type="text/javascript">
-      streeVis.config = {direction: "top-bottom", file: ""};
-      streeVis.loadUrl = function(x) {
-      var url = document.getElementById('url');
-      var value = url.value;
-      if (!value) {return;}
-      streeVis.config.file = value;
-      streeVis.run();
-      url.value = "";
-      }
+      streeVis.config.expanded = true;
     </script>
+    <script src="https://rawgit.com/mathjax/MathJax/master/MathJax.js?config=TeX-AMS_HTML-full"></script>
     <form>
-    <input id="url" style="font-size:110%" size="60" onkeypress="if (event.keyCode == 13) {streeVis.loadUrl(); event.stopPropagation(); return false;} else {return true;}"/>
-    <input id="load" type="button" value="Load URL" onclick="streeVis.loadUrl()"></input>
-    <!-- <input id="files" type="file" accept=".json" action="streeVis.loadUrl()"/> -->
+      <table border="0" cellpadding="0" cellspacing="2">
+        <tr>
+          <td align="left">
+            <input id="url" style="font-size:110%" size="60" onkeypress="if (event.keyCode == 13) {streeVis.loadUrl(); event.stopPropagation(); return false;} else {return true;};"></input>
+          </td>
+          <td align="left">
+            <input id="load" type="button" value="Load URL" onclick="streeVis.loadUrl(legacy.checked)"></input>
+            <input type="file" id="files"  accept=".json" name="file" onchange="streeVis.handleFileSelect(event, legacy.checked)"></input>
+            <input type="checkbox" id="legacy" value="legacy">Legacy</input>
+               </td>
+        <td align="bottom">
+            <input align="bottom" id="load local" type="button" value="Load Local SRE" onclick="streeVis.loadLocalLibrary()"></input>
+        </td>
+        </tr>
+        <tr>
+          <td rowspan="3">
+              <textarea id="input" rows="10" cols="63" style="font-size:110%"></textarea>  <!-- onkeypress="Lab.CheckKey(event)"  -->
+          </td>
+        <td>
+              <input align="bottom" id="translate" type="button" value="Translate" onclick="streeVis.translateTex()"></input>
+        </td>
+        <td align="right">
+          <input id="orientation" type="button" value="Orientation" onclick="streeVis.changeOrientation()"></input>
+          <input id="expand" type="button" value="Expand" onclick="streeVis.expandAll()"></input>
+          <input id="collapse" type="button" value="Collapse" onclick="streeVis.collapseAll()"></input>
+        </td>
+      </tr>
+</table>
     </form>
     <hr>
 
-    <div id="body"/>
-  </body>
+      <div id="body"/>
+    </body>
 </html>
 
 </body> </html>
