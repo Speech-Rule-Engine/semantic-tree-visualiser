@@ -41,6 +41,7 @@ streeVis = function() {
   this.stree = null;
   this.tree = null;
   this.rerun = false;
+  this.legacy = false;
   this.orientation();
 
   this.states = {};
@@ -167,6 +168,7 @@ streeVis.getContent = function(node) {
 };
 
 
+// For the legacy format
 streeVis.prototype.prepare = function(tree) {
   var snodes = [];
   for (var node in tree) {
@@ -179,7 +181,7 @@ streeVis.prototype.prepare = function(tree) {
   return snodes;
 };
 
-streeVis.prototype.prepareNode = function(node) {
+streeVis.prototype.prepareNode = function(type, node) {
   if (!node.id) {
     var snodes = [];
     for (var i = 0, n; n = node[i]; i++) {
@@ -196,6 +198,7 @@ streeVis.prototype.prepareNode = function(node) {
   }
   return [node];
 };
+// End legacy
 
 streeVis.prototype.update = function(source) {
   var duration = d3.event && d3.event.altKey ? 5000 : 500;
@@ -300,6 +303,7 @@ streeVis.prototype.update = function(source) {
   });
 };
 
+
 // Toggle children.
 streeVis.prototype.toggle = function(d, state) {
   if (d.children) {
@@ -372,17 +376,31 @@ streeVis.prototype.collapseAll = function() {
 };
 
 
+streeVis.prototype.setStates = function(node) {
+  if (node.children) {
+    node.children.forEach(goog.bind(this.setStates, this));
+    this.states[node.id] = true;
+  }
+};
+
 streeVis.prototype.visualiseJson = function(json) {
   if (!json) return;
   this.stree = JSON.parse(JSON.stringify(json));
   this.stree.x0 = this.h / 2;
   this.stree.y0 = 0;
 
+  // Legacy only!
+  if (this.legacy) {
+    this.stree.stree = this.prepare(this.stree.stree)[0];
+  }
+  
   if (this.rerun) {
     this.toggleSome(this.stree.stree);
   } else if (!streeVis.config.expanded) {
     this.toggleAll(this.stree.stree);
-  };
+  } else {
+    this.setStates(this.stree.stree);
+  }
   this.update(this.stree);
 };
 
@@ -395,8 +413,9 @@ streeVis.prototype.init = function() {
 
 streeVis.currentSVG = null;
 
-streeVis.run = function(rerun) {
-  var states = (rerun && streeVis.currentSVG) ?
+streeVis.run = function(option) {
+  option = option || {};
+  var states = (option.rerun && streeVis.currentSVG) ?
       streeVis.currentSVG.states : {};
   if (streeVis.currentSVG && streeVis.currentSVG.svg) {
     var svg = streeVis.currentSVG.svg[0][0];
@@ -406,8 +425,9 @@ streeVis.run = function(rerun) {
     }
   }
   streeVis.currentSVG = new streeVis();
+  streeVis.currentSVG.legacy = !!option.legacy;
   streeVis.currentSVG.states = states;
-  streeVis.currentSVG.rerun = rerun;
+  streeVis.currentSVG.rerun = option.rerun;
   streeVis.currentSVG.init();
 };
 
@@ -418,7 +438,9 @@ streeVis.changeOrientation = function() {
   } else {
     streeVis.config.direction = "top-bottom";
   }
-  streeVis.run(true);
+  streeVis.currentSVG ?
+    streeVis.run({rerun: true, legacy: streeVis.currentSVG.legacy}) :
+  streeVis.run({rerun: true});
 };
 
 
@@ -436,19 +458,19 @@ streeVis.collapseAll = function() {
 };
 
 
-streeVis.loadUrl = function(x) {
+streeVis.loadUrl = function(legacy) {
   var url = document.getElementById('url');
   var value = url.value;
   if (!value) {return;}
   streeVis.config.json = null;
   streeVis.config.url = value;
-  streeVis.run();
+  streeVis.run({legacy: legacy});
   url.value = "";
 };
 
 
 
-streeVis.handleFileSelect = function(evt) {
+streeVis.handleFileSelect = function(evt, legacy) {
   var files = evt.target.files; // FileList object
   // files is a FileList of File objects. List some properties.
   var reader = new FileReader();
@@ -457,7 +479,7 @@ streeVis.handleFileSelect = function(evt) {
     json = JSON.parse(f.target.result);
     streeVis.config.json = json;
     streeVis.config.url = '';
-    streeVis.run();
+    streeVis.run({legacy: legacy});
   };
   
   reader.readAsText(files[0]);
@@ -491,11 +513,8 @@ streeVis.translateTex = function() {
 
 // This will be replaced by the dedicated SRE function.
 streeVis.treeHTML = function(element, object) {
-  console.log(element);
   object["type"] = element.nodeName;
   var attributes = element.attributes;
-  console.log(attributes);
-  console.log(attributes.length);
   for (var i = 0; i < attributes.length; i++) {
     object[attributes[i].nodeName] = attributes[i].nodeValue;
   }
@@ -504,7 +523,6 @@ streeVis.treeHTML = function(element, object) {
     if (nodeList.length) {
       for (var i = 0; i < nodeList.length; i++) {
         var node = nodeList[i];
-        console.log(node);
         if (node.nodeType == 3) {
           object['$t'] = object['$t'] || '';
           object["$t"] += node.nodeValue;
