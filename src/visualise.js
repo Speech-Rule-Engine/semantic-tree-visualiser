@@ -33,14 +33,18 @@
  * @constructor
  */
 streeVis = function() {
-  this.file =  streeVis.config.file;
-  this.direction =  streeVis.config.direction;
+  this.url = streeVis.config.url;
+  this.json = streeVis.config.json;
+  this.direction = streeVis.config.direction;
   this.m = this.w = this.h = null;
   this.xFor = this.xAft = this.yFor = this.yAft = null;
   this.stree = null;
   this.tree = null;
+  this.rerun = false;
   this.orientation();
 
+  this.states = {};
+  
   this.diagonal = d3.svg.diagonal()
     .projection(goog.bind(function(d) { return [this.orientX(d), this.orientY(d)]; }, this));
 
@@ -60,8 +64,9 @@ streeVis = function() {
  * @type {Object.<string, string>}
  */
 streeVis.config = {
-  file: 'simple.json',
-  direction: 'left-right'
+  url: 'simple.json',
+  // direction: 'left-right'
+  direction: 'top-bottom'
 };
 
 
@@ -204,7 +209,7 @@ streeVis.prototype.update = function(source) {
           return 'translate(' + this.orientX(source, true) + ',' +
             this.orientY(source, true) + ')'; }, this))
         .on('click', goog.bind(function(d) {
-          streeVis.toggle(d); this.update(d); }, this));
+          this.toggle(d); this.update(d); }, this));
 
   nodeEnter.append('svg:circle')
       .attr('r', 1e-6)
@@ -280,7 +285,6 @@ streeVis.prototype.update = function(source) {
       return this.diagonal({source: o, target: o});
       }, this))
       .remove();
-
   // Stash the old positions for transition.
   nodes.forEach(function(d) {
     d.x0 = d.x;
@@ -289,7 +293,7 @@ streeVis.prototype.update = function(source) {
 };
 
 // Toggle children.
-streeVis.toggle = function(d) {
+streeVis.prototype.toggle = function(d, state) {
   if (d.children) {
     d._children = d.children;
     d.children = null;
@@ -297,32 +301,94 @@ streeVis.toggle = function(d) {
     d.children = d._children;
     d._children = null;
   }
+  this.states[d.id] = !!d.children;
 };
 
-streeVis.prototype.init = function() {
-  d3.json(this.file, goog.bind(function(json) {
-    if (!json) return;
-    this.stree = json;
-    this.stree.x0 = this.h / 2;
-    this.stree.y0 = 0;
 
-  function toggleAll(d) {
-    if (d.children) {
-      d.children.forEach(toggleAll);
-      streeVis.toggle(d);
-    }
+streeVis.prototype.toggleAll = function(d) {
+  if (d.children) {
+    d.children.forEach(goog.bind(this.toggleAll, this));
+    this.toggle(d);
   }
+};
 
-    this.stree.stree = this.prepare(this.stree.stree)[0];
-    toggleAll(this.stree.stree);
 
-    this.update(this.stree);
-  }, this));
+streeVis.prototype.toggleSome = function(d) {
+  if (this.states[d.id]) {
+    if (d._children) {
+      d.children = d._children;
+      d._children = null;
+    }
+    d.children.forEach(goog.bind(this.toggleSome, this));
+  } else {
+    this.toggleAll(d);
+  }
+};
+
+
+streeVis.prototype.expand = function(d) {
+  if (!d.children && !d._children)  {
+    return;
+  }
+  if (d._children) {
+    d.children = d._children;
+    d._children = null;
+    this.states[d.id] = true;
+  }
+  d.children.forEach(goog.bind(this.expand, this));
+};
+
+
+streeVis.prototype.expandAll = function() {
+  this.expand(this.stree.stree);
+  this.update(this.stree);
+};
+
+
+streeVis.prototype.collapse = function(d) {
+  if (!d.children && !d._children)  {
+    return;
+  }
+  if (d.children) {
+    d._children = d.children;
+    d.children = null;
+    this.states[d.id] = false;
+  }
+  d._children.forEach(goog.bind(this.collapse, this));
+};
+
+
+streeVis.prototype.collapseAll = function() {
+  this.collapse(this.stree.stree);
+  this.update(this.stree);
+};
+
+
+streeVis.prototype.visualiseJson = function(json) {
+  if (!json) return;
+  this.stree = JSON.parse(JSON.stringify(json));
+  this.stree.x0 = this.h / 2;
+  this.stree.y0 = 0;
+
+  this.stree.stree = this.prepare(this.stree.stree)[0];
+  this.rerun ? this.toggleSome(this.stree.stree) :
+    this.toggleAll(this.stree.stree);
+
+  this.update(this.stree);
+};
+
+
+streeVis.prototype.init = function() {
+  this.url ? 
+    d3.json(this.url, goog.bind(this.visualiseJson, this)) :
+    this.visualiseJson(this.json);
 };
 
 streeVis.currentSVG = null;
 
-streeVis.run = function() {
+streeVis.run = function(rerun) {
+  var states = (rerun && streeVis.currentSVG) ?
+      streeVis.currentSVG.states : {};
   if (streeVis.currentSVG && streeVis.currentSVG.svg) {
     var svg = streeVis.currentSVG.svg[0][0];
     if (svg.parentNode) {
@@ -331,5 +397,151 @@ streeVis.run = function() {
     }
   }
   streeVis.currentSVG = new streeVis();
+  streeVis.currentSVG.states = states;
+  streeVis.currentSVG.rerun = rerun;
   streeVis.currentSVG.init();
+};
+
+
+streeVis.changeOrientation = function() {
+  if (streeVis.config.direction === "top-bottom") {
+    streeVis.config.direction = "left-right";
+  } else {
+    streeVis.config.direction = "top-bottom";
+  }
+  streeVis.run(true);
+};
+
+
+streeVis.expandAll = function() {
+  if (streeVis.currentSVG) {
+    streeVis.currentSVG.expandAll();
+  }
+};
+
+
+streeVis.collapseAll = function() {
+  if (streeVis.currentSVG) {
+    streeVis.currentSVG.collapseAll();
+  }
+};
+
+
+streeVis.loadUrl = function(x) {
+  var url = document.getElementById('url');
+  var value = url.value;
+  if (!value) {return;}
+  streeVis.config.json = null;
+  streeVis.config.url = value;
+  streeVis.run();
+  url.value = "";
+};
+
+
+
+streeVis.handleFileSelect = function(evt) {
+  var files = evt.target.files; // FileList object
+  // files is a FileList of File objects. List some properties.
+  var reader = new FileReader();
+  var json = null;
+  reader.onload = function(f) {
+    json = JSON.parse(f.target.result);
+    streeVis.config.json = json;
+    streeVis.config.url = '';
+    streeVis.run();
+  };
+  
+  reader.readAsText(files[0]);
+  // var output = [];
+  // document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+};
+        
+streeVis.translateTex = function() {
+  try {
+    var jax = MathJax.InputJax.TeX.Parse(window.input.value).mml();
+  } catch(err) {
+    if (!err.texError) {throw err;}
+    console.log('The following error has occurred: ' + err);
+    return;
+  }
+  if (jax.inferred) {
+    jax = MathJax.ElementJax.mml.apply(MathJax.ElementJax, jax.data);
+  } else {
+    jax = MathJax.ElementJax.mml(jax);
+  }
+  var mml = jax.root.toMathML();
+  var stree = sre.System.getInstance().toSemantic(mml);
+  var object = {};
+  streeVis.treeHTML(stree.childNodes[0], object);
+  object = {stree: object};
+  console.log(JSON.stringify(object));
+};
+
+
+//Recursively loop through DOM elements and assign properties to object
+streeVis.treeHTML_old = function(element, object) {
+  object["type"] = element.nodeName;
+  var nodeList = element.childNodes;
+  if (nodeList != null) {
+    if (nodeList.length) {
+      object["content"] = [];
+      for (var i = 0; i < nodeList.length; i++) {
+        if (nodeList[i].nodeType == 3) {
+          object["content"].push(nodeList[i].nodeValue);
+        } else {
+          object["content"].push({});
+          streeVis.treeHTML(nodeList[i], object["content"][object["content"].length -1]);
+        }
+      }
+    }
+  }
+  if (element.attributes != null) {
+    if (element.attributes.length) {
+      object["attributes"] = {};
+      for (var i = 0; i < element.attributes.length; i++) {
+        object["attributes"][element.attributes[i].nodeName] = element.attributes[i].nodeValue;
+      }
+    }
+  }
+};
+
+
+streeVis.treeHTML = function(element, object) {
+  console.log(element);
+  object["type"] = element.nodeName;
+  var attributes = element.attributes;
+  console.log(attributes);
+  console.log(attributes.length);
+  for (var i = 0; i < attributes.length; i++) {
+    object[attributes[i].nodeName] = attributes[i].nodeValue;
+  }
+  var nodeList = element.childNodes;
+  if (nodeList != null) {
+    if (nodeList.length) {
+      for (var i = 0; i < nodeList.length; i++) {
+        var node = nodeList[i];
+        console.log(node);
+        if (node.nodeType == 3) {
+          object['$t'] = object['$t'] || '';
+          object["$t"] += node.nodeValue;
+          continue;
+        }
+        streeVis.addChildren('children', node, object);
+        streeVis.addChildren('content', node, object);
+      }
+    }
+  }
+};
+
+
+streeVis.addChildren = function(name, element, object) {
+  if (element.nodeName === name) {
+    object[name] = object[name] || [];
+    var children = element.childNodes;
+    for (var j = 0, child; child = children[j]; j++) {
+      var newObject = {};
+      streeVis.treeHTML(child, newObject);
+      object[name].push(newObject);
+    }
+  }
 };
