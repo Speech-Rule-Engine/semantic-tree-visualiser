@@ -511,6 +511,40 @@ streeVis.translateTex = function() {
 };
 
 
+streeVis.translateMathML = function() {
+  try {
+    var mmlJax = MathJax.InputJax.MathML;
+    if (!mmlJax.ParseXML) {
+      mmlJax.ParseXML = mmlJax.createParser();
+    }
+    var mml = mmlJax.Parse(window.input.value).mml.toMathML();
+  } catch(err) {
+    console.log('The following error has occurred: ' + err);
+    return;
+  }
+  if (!mml) return;
+  var stree = sre.System.getInstance().toSemantic(mml);
+  var object = {};
+  streeVis.treeHTML(stree.childNodes[0], object);
+  object = {stree: object};
+  streeVis.config.json = object;
+  streeVis.config.url = '';
+  streeVis.run();
+};
+
+
+streeVis.translateSRE = function() {
+  var stree = sre.System.getInstance().toSemantic(window.input.value);
+  if (!stree) return;
+  var object = {};
+  streeVis.treeHTML(stree.childNodes[0], object);
+  object = {stree: object};
+  streeVis.config.json = object;
+  streeVis.config.url = '';
+  streeVis.run();
+};
+
+
 // This will be replaced by the dedicated SRE function.
 streeVis.treeHTML = function(element, object) {
   object["type"] = element.nodeName;
