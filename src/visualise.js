@@ -228,7 +228,7 @@ streeVis.prototype.update = function(source) {
       return d._children ? 'lightsteelblue' : '#fff'; });
 
   nodeEnter.append('svg:title')
-      .text(function(d) { return d.type + ': ' + d.role; });
+    .text(function(d) { return d.type + ': ' + d.role; });
 
   nodeEnter.append('svg:text')
     .attr('x', goog.bind(function(d) {
@@ -501,11 +501,7 @@ streeVis.translateTex = function() {
     jax = MathJax.ElementJax.mml(jax);
   }
   var mml = jax.root.toMathML();
-  var stree = sre.System.getInstance().toSemantic(mml);
-  var object = {};
-  streeVis.treeHTML(stree.childNodes[0], object);
-  object = {stree: object};
-  streeVis.config.json = object;
+  streeVis.config.json = streeVis.treeJson(mml);
   streeVis.config.url = '';
   streeVis.run();
 };
@@ -523,30 +519,39 @@ streeVis.translateMathML = function() {
     return;
   }
   if (!mml) return;
-  var stree = sre.System.getInstance().toSemantic(mml);
-  var object = {};
-  streeVis.treeHTML(stree.childNodes[0], object);
-  object = {stree: object};
-  streeVis.config.json = object;
+  streeVis.config.json = streeVis.treeJson(mml);
   streeVis.config.url = '';
   streeVis.run();
 };
 
 
 streeVis.translateSRE = function() {
-  var stree = sre.System.getInstance().toSemantic(window.input.value);
-  if (!stree) return;
-  var object = {};
-  streeVis.treeHTML(stree.childNodes[0], object);
-  object = {stree: object};
-  streeVis.config.json = object;
+  streeVis.config.json = streeVis.treeJson(window.input.value);
   streeVis.config.url = '';
   streeVis.run();
 };
 
 
+// Computes tree and JSON.
+streeVis.treeJson = function(mml) {
+  if (sre.SemanticTree.prototype.toJson) {
+    return sre.System.getInstance().toJson(mml);
+  }
+  var stree = sre.System.getInstance().toSemantic(mml);
+  if (!stree) return null;
+  return streeVis.treeHTML(stree);
+};
+
+
 // This will be replaced by the dedicated SRE function.
-streeVis.treeHTML = function(element, object) {
+streeVis.treeHTML = function(tree) {
+  var object = {};
+  streeVis.treeHTML_(tree.childNodes[0], object);
+  object = {stree: object};
+  return object;
+};
+
+streeVis.treeHTML_ = function(element, object) {
   object["type"] = element.nodeName;
   var attributes = element.attributes;
   for (var i = 0; i < attributes.length; i++) {
@@ -576,7 +581,7 @@ streeVis.addChildren = function(name, element, object) {
     var children = element.childNodes;
     for (var j = 0, child; child = children[j]; j++) {
       var newObject = {};
-      streeVis.treeHTML(child, newObject);
+      streeVis.treeHTML_(child, newObject);
       object[name].push(newObject);
     }
   }
