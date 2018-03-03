@@ -486,13 +486,24 @@ streeVis.handleFileSelect = function(evt, legacy) {
   // var output = [];
   // document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
 };
-        
-streeVis.translateTex = function() {
+
+streeVis.render = function(text) {
+  streeVis.showMathml(text);
+  var element = document.getElementById('rendered');
+  var script = element.querySelector('script');
+  var jax = MathJax.Hub.getJaxFor(script);
+  MathJax.Hub.Queue(
+    ["Text", jax, text],
+  );
+};
+
+streeVis.translateTex = function(display) {
+  var value = (display ? '\\displaystyle ' : '') + window.input.value;
   try {
-    var jax = MathJax.InputJax.TeX.Parse(window.input.value).mml();
+    var jax = MathJax.InputJax.TeX.Parse(value).mml();
   } catch(err) {
     if (!err.texError) {throw err;}
-    console.log('The following error has occurred: ' + err);
+    window.alert('The following error has occurred: ' + err);
     return;
   }
   if (jax.inferred) {
@@ -501,6 +512,7 @@ streeVis.translateTex = function() {
     jax = MathJax.ElementJax.mml(jax);
   }
   var mml = jax.root.toMathML();
+  streeVis.render(mml);
   streeVis.config.json = streeVis.treeJson(mml);
   streeVis.config.url = '';
   streeVis.run();
@@ -515,10 +527,11 @@ streeVis.translateMathML = function() {
     }
     var mml = mmlJax.Parse(window.input.value).mml.toMathML();
   } catch(err) {
-    console.log('The following error has occurred: ' + err);
+    window.alert('The following error has occurred: ' + err);
     return;
   }
   if (!mml) return;
+  streeVis.render(mml);
   streeVis.config.json = streeVis.treeJson(mml);
   streeVis.config.url = '';
   streeVis.run();
@@ -527,6 +540,7 @@ streeVis.translateMathML = function() {
 
 streeVis.translateSRE = function() {
   streeVis.config.json = streeVis.treeJson(window.input.value);
+  streeVis.render(window.input.value);
   streeVis.config.url = '';
   streeVis.run();
 };
@@ -602,4 +616,28 @@ streeVis.loadLocalLibrary = function() {
   scr.src = streeVis.config.sre;
   document.head ? document.head.appendChild(scr) :
     document.body.appendChild(scr);
+};
+
+streeVis.keep = function() {
+  window.location = 
+    String(window.location).replace(/\?.*/,"")+"?"
+    +escape(window.input.value);
+};
+
+
+streeVis.reload = function() {
+  if (window.location.search.length > 1) {
+    window.input.defaultValue =
+      unescape(window.location.search.replace(/.*\?/,""));
+  }
+};
+
+
+streeVis.showMathml = function (mathml) {
+  if (window.showMathml.checked) {
+    window.mathml.innerHTML = "";
+    MathJax.HTML.addText(window.mathml, mathml);
+  } else {
+    window.mathml.innerHTML = "";
+  }
 };

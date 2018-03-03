@@ -9,7 +9,10 @@
     <script type="text/javascript" src="src/d3/d3.layout.js"></script>
     <style type="text/css">
 
-
+html {
+    overflow-y: scroll; 
+    }
+    
 .node circle {
   cursor: pointer;
   fill: #fff;
@@ -64,9 +67,11 @@ path.link {
               <textarea id="input" rows="7" cols="60" style="font-size:120%"></textarea>  <!-- onkeypress="Lab.CheckKey(event)"  -->
           </td>
         <td>
-              <input align="bottom" id="translate" type="button" value="LaTeX (MathJax)" onclick="streeVis.translateTex()"></input>
+          <input align="bottom" id="translate" type="button" value="LaTeX (MathJax)" onclick="streeVis.translateTex(display.checked)"></input>
+          &nbsp;
+          <input checked align="right" type="checkbox" id="display" value="display">Display</input>
         </td>
-        <td align="right">
+        <td align="left">
           <input id="orientation" type="button" value="Orientation" onclick="streeVis.changeOrientation()"></input>
           <input id="expand" type="button" value="Expand" onclick="streeVis.expandAll()"></input>
           <input id="collapse" type="button" value="Collapse" onclick="streeVis.collapseAll()"></input>
@@ -74,19 +79,34 @@ path.link {
         </tr>
         <tr>
           <td>
-                        <input align="bottom" id="translate" type="button" value="MathML (MathJax)" onclick="streeVis.translateMathML()"></input>
+            <input align="bottom" id="translate" type="button" value="MathML (MathJax)" onclick="streeVis.translateMathML()"></input>
+          <input type="checkbox" id="showMathml" value="showMathml">Show MathML</input>
+          </td>
+          <td rowspan="3">
+            <div id="rendered" style="border:1px solid; padding:3px"><math></math></div>
           </td>
         </tr>
         <tr>
           <td>
-                        <input align="bottom" id="translate" type="button" value="MathML (Direct)" onclick="streeVis.translateSRE()"></input>
+            <input align="bottom" id="translate" type="button" value="MathML (Direct)" onclick="streeVis.translateSRE()"></input>
           </td>
+        </tr>
+        <tr>
+        <td align="bottom">
+          <input align="bottom" id="keep" type="button" value="Keep" onclick="streeVis.keep()"></input>
+        </td>
         </tr>
       </table>
     </form>
-    <hr>
+    <hr/>
 
-      <div id="body"/>
+    <div id="body"></div>
+    <div style="border:1px solid; padding:3px">
+      <pre id="mathml"></pre>
+    </div>
+    <script type="text/javascript">
+      streeVis.reload();
+    </script>
     </body>
 </html>
 
