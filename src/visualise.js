@@ -489,6 +489,7 @@ streeVis.handleFileSelect = function(evt, legacy) {
 
 streeVis.render = function(text) {
   streeVis.showMathml(text);
+  streeVis.showJson();
   var element = document.getElementById('rendered');
   var script = element.querySelector('script');
   var jax = MathJax.Hub.getJaxFor(script);
@@ -512,8 +513,8 @@ streeVis.translateTex = function(display) {
     jax = MathJax.ElementJax.mml(jax);
   }
   var mml = jax.root.toMathML();
-  streeVis.render(mml);
   streeVis.config.json = streeVis.treeJson(mml);
+  streeVis.render(mml);
   streeVis.config.url = '';
   streeVis.run();
 };
@@ -531,8 +532,8 @@ streeVis.translateMathML = function() {
     return;
   }
   if (!mml) return;
-  streeVis.render(mml);
   streeVis.config.json = streeVis.treeJson(mml);
+  streeVis.render(mml);
   streeVis.config.url = '';
   streeVis.run();
 };
@@ -639,5 +640,15 @@ streeVis.showMathml = function (mathml) {
     MathJax.HTML.addText(window.mathml, mathml);
   } else {
     window.mathml.innerHTML = "";
+  }
+};
+
+
+streeVis.showJson = function () {
+  if (window.showJson.checked) {
+    window.json.innerHTML = "";
+    MathJax.HTML.addText(window.json, JSON.stringify(streeVis.config.json, null, 2));
+  } else {
+    window.json.innerHTML = "";
   }
 };

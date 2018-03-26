@@ -51,11 +51,13 @@ path.link {
       <table border="0" cellpadding="0" cellspacing="2">
         <tr>
           <td align="left">
-            <input id="url" style="font-size:120%" size="65" onkeypress="if (event.keyCode == 13) {streeVis.loadUrl(); event.stopPropagation(); return false;} else {return true;};"></input>
+            <input id="url" style="font-size:120%" size="40" onkeypress="if (event.keyCode == 13) {streeVis.loadUrl(); event.stopPropagation(); return false;} else {return true;};"></input>
           </td>
           <td align="left">
             <input id="load" type="button" value="Load URL" onclick="streeVis.loadUrl(legacy.checked)"></input>
             <input type="file" id="files"  accept=".json" name="file" onchange="streeVis.handleFileSelect(event, legacy.checked)"></input>
+          </td>
+          <td align="left">
             <input type="checkbox" id="legacy" value="legacy">Legacy</input>
                </td>
         <td align="bottom">
@@ -64,11 +66,12 @@ path.link {
         </tr>
         <tr>
           <td rowspan="4">
-              <textarea id="input" rows="7" cols="60" style="font-size:120%"></textarea>  <!-- onkeypress="Lab.CheckKey(event)"  -->
+              <textarea id="input" rows="7" cols="40" style="font-size:120%"></textarea>  <!-- onkeypress="Lab.CheckKey(event)"  -->
           </td>
         <td>
           <input align="bottom" id="translate" type="button" value="LaTeX (MathJax)" onclick="streeVis.translateTex(display.checked)"></input>
-          &nbsp;
+          </td>
+          <td align="left">
           <input checked align="right" type="checkbox" id="display" value="display">Display</input>
         </td>
         <td align="left">
@@ -80,21 +83,26 @@ path.link {
         <tr>
           <td>
             <input align="bottom" id="translate" type="button" value="MathML (MathJax)" onclick="streeVis.translateMathML()"></input>
-          <input type="checkbox" id="showMathml" value="showMathml">Show MathML</input>
           </td>
-          <td rowspan="3">
-            <div id="rendered" style="border:1px solid; padding:3px"><math></math></div>
+          <td align="left">
+          <input type="checkbox" id="showMathml" value="showMathml">Show MathML</input>
           </td>
         </tr>
         <tr>
           <td>
-            <input align="bottom" id="translate" type="button" value="MathML (Direct)" onclick="streeVis.translateSRE()"></input>
+            <input align="bottom" id="translate" type="button" value="MathML (direct)" onclick="streeVis.translateSRE()"></input>
+          </td>
+          <td align="left">
+          <input type="checkbox" id="showJson" value="showJson">Show Json</input>
           </td>
         </tr>
         <tr>
         <td align="bottom">
           <input align="bottom" id="keep" type="button" value="Keep" onclick="streeVis.keep()"></input>
         </td>
+          <td rowspan="3">
+            <div id="rendered" style="border:1px solid; padding:3px"><math></math></div>
+          </td>
         </tr>
       </table>
     </form>
@@ -103,6 +111,9 @@ path.link {
     <div id="body"></div>
     <div style="border:1px solid; padding:3px">
       <pre id="mathml"></pre>
+    </div>
+    <div style="border:1px solid; padding:3px">
+      <pre id="json"></pre>
     </div>
     <script type="text/javascript">
       streeVis.reload();
