@@ -68,6 +68,7 @@ streeVis.config = {
   url: 'simple.json',
   direction: 'top-bottom',
   sre: './mathjax-sre.js',
+  cdnjs: 'https://cdn.jsdelivr.net/npm/speech-rule-engine/lib/sre_browser.js',
   expanded: false,
   script: null
 };
@@ -512,11 +513,7 @@ streeVis.translateTex = function(display) {
   } else {
     jax = MathJax.ElementJax.mml(jax);
   }
-  var mml = jax.root.toMathML();
-  streeVis.config.json = streeVis.treeJson(mml);
-  streeVis.render(mml);
-  streeVis.config.url = '';
-  streeVis.run();
+  streeVis.show(jax.root.toMathML());
 };
 
 
@@ -531,32 +528,36 @@ streeVis.translateMathML = function() {
     window.alert('The following error has occurred: ' + err);
     return;
   }
-  if (!mml) return;
-  streeVis.config.json = streeVis.treeJson(mml);
-  streeVis.render(mml);
-  streeVis.config.url = '';
-  streeVis.run();
+  streeVis.show(mml);
 };
 
 
 streeVis.translateSRE = function() {
-  streeVis.config.json = streeVis.treeJson(window.input.value);
-  streeVis.render(window.input.value);
+  streeVis.show(window.input.value);
+};
+
+
+streeVis.show = function(mml) {
+  if (!mml) return;
+  streeVis.showMathml(mml);
+  streeVis.render(mml);
+  streeVis.config.json = streeVis.treeJson(mml);
   streeVis.config.url = '';
   streeVis.run();
 };
 
-
 // Computes tree and JSON.
 streeVis.treeJson = function(mml) {
-  if (sre.SemanticTree.prototype.toJson) {
-    return sre.System.getInstance().toJson(mml);
-  }
-  var stree = sre.System.getInstance().toSemantic(mml);
+  var node = sre.DomUtil.parseInput(mml, sre.System.Error);
+  var stree = sre.Semantic.getTree(node);
+  streeVis.showSemantics(stree);
   if (!stree) return null;
-  return streeVis.treeHTML(stree);
-};
+  if (stree.toJson) {
+    return stree.toJson();
+  }
+  return streeVis.treeHTML(stree.xml());
 
+};
 
 // This will be replaced by the dedicated SRE function.
 streeVis.treeHTML = function(tree) {
@@ -619,6 +620,15 @@ streeVis.loadLocalLibrary = function() {
     document.body.appendChild(scr);
 };
 
+streeVis.loadLatestLibrary = function() {
+  streeVis.removeLocalLibrary();
+  var scr = document.createElement('script');
+  scr.type = 'text/javascript';
+  scr.src = streeVis.config.cdnjs;
+  document.head ? document.head.appendChild(scr) :
+    document.body.appendChild(scr);
+};
+
 streeVis.keep = function() {
   window.location = 
     String(window.location).replace(/\?.*/,"")+"?"
@@ -650,5 +660,15 @@ streeVis.showJson = function () {
     MathJax.HTML.addText(window.json, JSON.stringify(streeVis.config.json, null, 2));
   } else {
     window.json.innerHTML = "";
+  }
+};
+
+
+streeVis.showSemantics = function (stree) {
+  if (stree.collator && window.showSemantics.checked) {
+    window.semantics.innerHTML = "";
+    MathJax.HTML.addText(window.semantics, stree.collator.toString());
+  } else {
+    window.semantics.innerHTML = "";
   }
 };

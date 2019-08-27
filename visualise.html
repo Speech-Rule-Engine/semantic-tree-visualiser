@@ -5,6 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <title>Semantic Tree Visualisation</title>
     <link type="text/css" rel="stylesheet" href="styles/style.css"/>
+    <!-- <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script> -->
     <script type="text/javascript" src="src/d3/d3.js"></script>
     <script type="text/javascript" src="src/d3/d3.layout.js"></script>
     <style type="text/css">
@@ -46,8 +47,8 @@ path.link {
       );
     </script>
     <!-- <script src="http://localhost/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML-full"></script> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML-full"></script>
-    <form>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML-full"></script>
+<!-- <form> -->
       <table border="0" cellpadding="0" cellspacing="2">
         <tr>
           <td align="left">
@@ -61,6 +62,7 @@ path.link {
             <input type="checkbox" id="legacy" value="legacy">Legacy</input>
                </td>
         <td align="bottom">
+            <input align="bottom" id="load latest" type="button" value="Load Latest SRE" onclick="streeVis.loadLatestLibrary()"></input>
             <input align="bottom" id="load local" type="button" value="Load Local SRE" onclick="streeVis.loadLocalLibrary()"></input>
         </td>
         </tr>
@@ -95,6 +97,9 @@ path.link {
           <td align="left">
           <input type="checkbox" id="showJson" value="showJson">Show Json</input>
           </td>
+          <td>
+          <input type="checkbox" id="showSemantics" value="showSemantics">Show Semantics</input>
+          </td>
         </tr>
         <tr>
         <td align="bottom">
@@ -114,6 +119,9 @@ path.link {
     </div>
     <div style="border:1px solid; padding:3px">
       <pre id="json"></pre>
+    </div>
+    <div style="border:1px solid; padding:3px">
+      <pre id="semantics"></pre>
     </div>
     <script type="text/javascript">
       streeVis.reload();
