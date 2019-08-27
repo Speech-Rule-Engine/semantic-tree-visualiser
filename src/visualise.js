@@ -550,13 +550,12 @@ streeVis.show = function(mml) {
 streeVis.treeJson = function(mml) {
   var node = sre.DomUtil.parseInput(mml, sre.System.Error);
   var stree = sre.Semantic.getTree(node);
-  streeVis.showSemantics(stree);
   if (!stree) return null;
+  streeVis.showSemantics(stree);
   if (stree.toJson) {
     return stree.toJson();
   }
   return streeVis.treeHTML(stree.xml());
-
 };
 
 // This will be replaced by the dedicated SRE function.
@@ -665,9 +664,11 @@ streeVis.showJson = function () {
 
 
 streeVis.showSemantics = function (stree) {
-  if (stree.collator && window.showSemantics.checked) {
+  if (window.showSemantics.checked) {
     window.semantics.innerHTML = "";
-    MathJax.HTML.addText(window.semantics, stree.collator.toString());
+    console.log(stree.toString());
+    MathJax.HTML.addText(window.semantics,
+                         sre.DomUtil.formatXml(stree.toString()));
   } else {
     window.semantics.innerHTML = "";
   }
