@@ -29,6 +29,7 @@
  */
 
 
+
 /**
  * @constructor
  */
@@ -434,10 +435,10 @@ streeVis.run = function(option) {
 
 
 streeVis.changeOrientation = function() {
-  if (streeVis.config.direction === "top-bottom") {
-    streeVis.config.direction = "left-right";
+  if (streeVis.config.direction === 'top-bottom') {
+    streeVis.config.direction = 'left-right';
   } else {
-    streeVis.config.direction = "top-bottom";
+    streeVis.config.direction = 'top-bottom';
   }
   streeVis.currentSVG ?
     streeVis.run({rerun: true, legacy: streeVis.currentSVG.legacy}) :
@@ -466,7 +467,7 @@ streeVis.loadUrl = function(legacy) {
   streeVis.config.json = null;
   streeVis.config.url = value;
   streeVis.run({legacy: legacy});
-  url.value = "";
+  url.value = '';
 };
 
 
@@ -489,60 +490,37 @@ streeVis.handleFileSelect = function(evt, legacy) {
 };
 
 streeVis.render = function(text) {
-  streeVis.showMathml(text);
-  streeVis.showJson();
   var element = document.getElementById('rendered');
-  var script = element.querySelector('script');
-  var jax = MathJax.Hub.getJaxFor(script);
-  MathJax.Hub.Queue(
-    ["Text", jax, text],
-  );
+  element.innerHTML = '';
+  var jax = MathJax.mathml2chtml(text);
+  element.appendChild(jax);
+  MathJax.startup.document.clear();
+  MathJax.startup.document.updateDocument();
 };
 
 streeVis.translateTex = function(display) {
   var value = (display ? '\\displaystyle ' : '') + window.input.value;
-  try {
-    var jax = MathJax.InputJax.TeX.Parse(value).mml();
-  } catch(err) {
-    if (!err.texError) {throw err;}
-    window.alert('The following error has occurred: ' + err);
-    return;
-  }
-  if (jax.inferred) {
-    jax = MathJax.ElementJax.mml.apply(MathJax.ElementJax, jax.data);
-  } else {
-    jax = MathJax.ElementJax.mml(jax);
-  }
-  streeVis.show(jax.root.toMathML());
+  streeVis.show(MathJax.tex2mml(value));
 };
 
 
 streeVis.translateMathML = function() {
-  try {
-    var mmlJax = MathJax.InputJax.MathML;
-    if (!mmlJax.ParseXML) {
-      mmlJax.ParseXML = mmlJax.createParser();
-    }
-    var mml = mmlJax.Parse(window.input.value).mml.toMathML();
-  } catch(err) {
-    window.alert('The following error has occurred: ' + err);
-    return;
-  }
-  streeVis.show(mml);
+  streeVis.show(MathJax.mathml2mml(window.input.value));
 };
 
 
 streeVis.translateSRE = function() {
-  streeVis.show(window.input.value);
+  streeVis.show(sre.DomUtil.formatXml(window.input.value).trim());
 };
 
-
+// sre.DomUtil.formatXml(
 streeVis.show = function(mml) {
   if (!mml) return;
   streeVis.showMathml(mml);
   streeVis.render(mml);
   streeVis.config.json = streeVis.treeJson(mml);
   streeVis.config.url = '';
+  streeVis.showJson();
   streeVis.run();
 };
 
@@ -567,7 +545,7 @@ streeVis.treeHTML = function(tree) {
 };
 
 streeVis.treeHTML_ = function(element, object) {
-  object["type"] = element.nodeName;
+  object['type'] = element.nodeName;
   var attributes = element.attributes;
   for (var i = 0; i < attributes.length; i++) {
     object[attributes[i].nodeName] = attributes[i].nodeValue;
@@ -579,7 +557,7 @@ streeVis.treeHTML_ = function(element, object) {
         var node = nodeList[i];
         if (node.nodeType == 3) {
           object['$t'] = object['$t'] || '';
-          object["$t"] += node.nodeValue;
+          object['$t'] += node.nodeValue;
           continue;
         }
         streeVis.addChildren('children', node, object);
@@ -630,7 +608,7 @@ streeVis.loadLatestLibrary = function() {
 
 streeVis.keep = function() {
   window.location = 
-    String(window.location).replace(/\?.*/,"")+"?"
+    String(window.location).replace(/\?.*/,'') + '?'
     +escape(window.input.value);
 };
 
@@ -638,38 +616,35 @@ streeVis.keep = function() {
 streeVis.reload = function() {
   if (window.location.search.length > 1) {
     window.input.defaultValue =
-      unescape(window.location.search.replace(/.*\?/,""));
+      unescape(window.location.search.replace(/.*\?/,''));
   }
 };
 
 
 streeVis.showMathml = function (mathml) {
+  window.mathml.innerHTML = '';
   if (window.showMathml.checked) {
-    window.mathml.innerHTML = "";
-    MathJax.HTML.addText(window.mathml, mathml);
-  } else {
-    window.mathml.innerHTML = "";
+    streeVis.addText(window.mathml, mathml);
   }
 };
 
 
 streeVis.showJson = function () {
+  window.json.innerHTML = '';
   if (window.showJson.checked) {
-    window.json.innerHTML = "";
-    MathJax.HTML.addText(window.json, JSON.stringify(streeVis.config.json, null, 2));
-  } else {
-    window.json.innerHTML = "";
+    streeVis.addText(window.json, JSON.stringify(streeVis.config.json, null, 2));
   }
 };
 
 
 streeVis.showSemantics = function (stree) {
+  window.semantics.innerHTML = '';
   if (window.showSemantics.checked) {
-    window.semantics.innerHTML = "";
-    console.log(stree.toString());
-    MathJax.HTML.addText(window.semantics,
-                         sre.DomUtil.formatXml(stree.toString()));
-  } else {
-    window.semantics.innerHTML = "";
+    streeVis.addText(window.semantics, sre.DomUtil.formatXml(stree.toString()));
   }
+};
+
+
+streeVis.addText = function(node, text) {
+  node.appendChild(document.createTextNode(text));
 };
