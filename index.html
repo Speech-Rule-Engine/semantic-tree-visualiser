@@ -1,0 +1,125 @@
+ <!-- Copyright (c) 2016 The MathJax Consortium -->
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <title>Semantic Tree Visualisation</title>
+    <link type="text/css" rel="stylesheet" href="styles/style.css"/>
+    <!-- <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script> -->
+    <script type="text/javascript" src="src/d3/d3.js"></script>
+    <script type="text/javascript" src="src/d3/d3.layout.js"></script>
+    <style type="text/css">
+
+html {
+    overflow-y: scroll; 
+    }
+    
+.node circle {
+  cursor: pointer;
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node text {
+  font-size: 11px;
+}
+
+path.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript" src="src/base.js"></script>
+    <script type="text/javascript" src="src/visualise.js"></script>
+    <script type="text/javascript">
+      streeVis.config.expanded = true;
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+      extensions: ["[a11y]/explorer.js"],
+      jax: ["input/TeX", "input/MathML"]
+      }
+      );
+    </script>
+    <!-- <script src="http://localhost/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML-full"></script> -->
+<script async src="https://cdn.jsdelivr.net/npm/speech-rule-engine/lib/sre_browser.js"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML-full"></script> -->
+<!-- <form> -->
+      <table border="0" cellpadding="0" cellspacing="2">
+        <tr>
+          <td rowspan="4">
+              <textarea id="input" rows="7" cols="40" style="font-size:120%"></textarea>  <!-- onkeypress="Lab.CheckKey(event)"  -->
+          </td>
+        <td>
+          <input align="bottom" id="translate" type="button" value="LaTeX (MathJax)" onclick="streeVis.translateTex(display.checked)"></input>
+          </td>
+          <td align="left">
+          <input checked align="right" type="checkbox" id="display" value="display">Display</input>
+        </td>
+          <td align="left">
+          <input align="bottom" id="load local" type="button" value="Load Local SRE" onclick="streeVis.loadLocalLibrary()"></input>
+          </td>
+            <td rowspan="4">
+            <div id="rendered" style="border:0px solid; padding:3px;"><math></math></div>
+        </td>
+      </tr>
+        <tr>
+          <td>
+            <input align="bottom" id="translate" type="button" value="MathML (MathJax)" onclick="streeVis.translateMathML()"></input>
+          </td>
+          <td align="left">
+          <input type="checkbox" id="showMathml" value="showMathml">Show MathML</input>
+          </td>
+        <td align="left">
+          <input id="orientation" type="button" value="Orientation" onclick="streeVis.changeOrientation()"></input>
+        </td>
+        </tr>
+        <tr>
+          <td>
+            <input align="bottom" id="translate" type="button" value="MathML (direct)" onclick="streeVis.translateSRE()"></input>
+          </td>
+          <td align="left">
+          <input type="checkbox" id="showJson" value="showJson">Show Json</input>
+          </td>
+        <td align="left">
+          <input id="expand" type="button" value="Expand" onclick="streeVis.expandAll()"></input>
+        </td>
+        </tr>
+        <tr>
+        <td align="bottom">
+          <input align="bottom" id="keep" type="button" value="Keep" onclick="streeVis.keep()"></input>
+        </td>
+          <td>
+          <input type="checkbox" id="showSemantics" value="showSemantics">Show Semantics</input>
+          </td>
+        <td align="left">
+          <input id="collapse" type="button" value="Collapse" onclick="streeVis.collapseAll()"></input>
+        </td>
+        </tr>
+  </table>
+    </form>
+    <hr/>
+
+    <div id="body"></div>
+    <div style="border:1px solid; padding:3px">
+      <pre id="mathml"></pre>
+    </div>
+    <div style="border:1px solid; padding:3px">
+      <pre id="json"></pre>
+    </div>
+    <div style="border:1px solid; padding:3px">
+      <pre id="semantics"></pre>
+    </div>
+    <script type="text/javascript">
+      streeVis.reload();
+    </script>
+    </body>
+</html>
+
+</body> </html>
