@@ -46,7 +46,8 @@ streeVis = function() {
   this.states = {};
   
   this.diagonal = d3.svg.diagonal()
-    .projection(goog.bind(function(d) { return [this.orientX(d), this.orientY(d)]; }, this));
+    .projection(function(d) {
+      return [this.orientX(d), this.orientY(d)]; }.bind(this));
 
   this.svg = d3.select('#body').append('svg:svg');
   this.vis = this.svg
@@ -66,8 +67,7 @@ streeVis = function() {
 streeVis.config = {
   // url: 'simple.json',
   direction: 'top-bottom',
-  sre: './sre_browser.js',
-  cdnjs: 'https://cdn.jsdelivr.net/npm/speech-rule-engine/lib/sre_browser.js',
+  sre: './node_modules/speech-rule-engine/lib/sre_browser.js',
   expanded: false,
   script: null
 };
@@ -184,11 +184,11 @@ streeVis.prototype.update = function(source) {
   // Enter any new nodes at the parent's previous position.
   var nodeEnter = node.enter().append('svg:g')
       .attr('class', 'node')
-        .attr('transform', goog.bind(function(d) {
+        .attr('transform', function(d) {
           return 'translate(' + this.orientX(source, true) + ',' +
-            this.orientY(source, true) + ')'; }, this))
-        .on('click', goog.bind(function(d) {
-          this.toggle(d); this.update(d); }, this));
+            this.orientY(source, true) + ')'; }.bind(this))
+        .on('click', function(d) {
+          this.toggle(d); this.update(d); }.bind(this));
 
   nodeEnter.append('svg:circle')
       .attr('r', 1e-6)
@@ -199,10 +199,10 @@ streeVis.prototype.update = function(source) {
     .text(function(d) { return d.type + ': ' + d.role; });
 
   nodeEnter.append('svg:text')
-    .attr('x', goog.bind(function(d) {
-      return d.children || d._children ? this.xFor : this.xAft; }, this))
-    .attr('dy', goog.bind(function(d) {
-      return d.children || d._children ? this.yFor : this.yAft; }, this))
+    .attr('x', function(d) {
+      return d.children || d._children ? this.xFor : this.xAft; }.bind(this))
+    .attr('dy', function(d) {
+      return d.children || d._children ? this.yFor : this.yAft; }.bind(this))
     .attr('text-anchor', function(d) {
       return d.children || d._children ? 'end' : 'start'; })
     .text(function(d) { return streeVis.getContent(d); })
@@ -213,8 +213,8 @@ streeVis.prototype.update = function(source) {
   // Transition nodes to their new position.
   var nodeUpdate = node.transition()
       .duration(duration)
-        .attr('transform', goog.bind(function(d) {
-          return 'translate(' + this.orientX(d) + ',' + this.orientY(d) + ')'; }, this));
+        .attr('transform', function(d) {
+          return 'translate(' + this.orientX(d) + ',' + this.orientY(d) + ')'; }.bind(this));
 
   nodeUpdate.select('circle')
       .attr('r', 4.5)
@@ -226,8 +226,8 @@ streeVis.prototype.update = function(source) {
   // Transition exiting nodes to the parent's new position.
   var nodeExit = node.exit().transition()
       .duration(duration)
-        .attr('transform', goog.bind(function(d) {
-          return 'translate(' + this.orientX(source) + ',' + this.orientY(source) + ')'; }, this))
+        .attr('transform', function(d) {
+          return 'translate(' + this.orientX(source) + ',' + this.orientY(source) + ')'; }.bind(this))
       .remove();
 
   nodeExit.select('circle')
@@ -243,26 +243,26 @@ streeVis.prototype.update = function(source) {
   // Enter any new links at the parent's previous position.
   link.enter().insert('svg:path', 'g')
       .attr('class', 'link')
-    .attr('d', goog.bind(function(d) {
-        var o = {x: source.x0, y: source.y0};
+    .attr('d', function(d) {
+      var o = {x: source.x0, y: source.y0};
       return this.diagonal({source: o, target: o});
-      }, this))
+    }.bind(this))
     .transition()
       .duration(duration)
-    .attr('d', goog.bind(this.diagonal, this));
+    .attr('d', this.diagonal.bind(this));
 
   // Transition links to their new position.
   link.transition()
       .duration(duration)
-    .attr('d', goog.bind(this.diagonal, this));
+    .attr('d', this.diagonal.bind(this));
 
   // Transition exiting nodes to the parent's new position.
   link.exit().transition()
       .duration(duration)
-    .attr('d', goog.bind(function(d) {
-        var o = {x: source.x, y: source.y};
+    .attr('d', function(d) {
+      var o = {x: source.x, y: source.y};
       return this.diagonal({source: o, target: o});
-      }, this))
+    }.bind(this))
       .remove();
   // Stash the old positions for transition.
   nodes.forEach(function(d) {
@@ -287,7 +287,7 @@ streeVis.prototype.toggle = function(d, state) {
 
 streeVis.prototype.toggleAll = function(d) {
   if (d.children) {
-    d.children.forEach(goog.bind(this.toggleAll, this));
+    d.children.forEach(this.toggleAll.bind(this));
     this.toggle(d);
   }
 };
@@ -299,7 +299,7 @@ streeVis.prototype.toggleSome = function(d) {
       d.children = d._children;
       d._children = null;
     }
-    d.children.forEach(goog.bind(this.toggleSome, this));
+    d.children.forEach(this.toggleSome.bind(this));
   } else {
     this.toggleAll(d);
   }
@@ -315,7 +315,7 @@ streeVis.prototype.expand = function(d) {
     d._children = null;
     this.states[d.id] = true;
     this.update(d);
-    d.children.forEach(goog.bind(this.expand, this));
+    d.children.forEach(this.expand.bind(this));
   }
 };
 
@@ -330,7 +330,7 @@ streeVis.prototype.collapse = function(d) {
     return;
   }
   if (d.children) {
-    d.children.forEach(goog.bind(this.collapse, this));
+    d.children.forEach(this.collapse.bind(this));
     d._children = d.children;
     d.children = null;
     this.states[d.id] = false;
@@ -346,7 +346,7 @@ streeVis.prototype.collapseAll = function() {
 
 streeVis.prototype.setStates = function(node) {
   if (node.children) {
-    node.children.forEach(goog.bind(this.setStates, this));
+    node.children.forEach(this.setStates.bind(this));
     this.states[node.id] = true;
   }
 };
