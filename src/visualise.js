@@ -34,7 +34,6 @@
  * @constructor
  */
 streeVis = function() {
-  this.url = streeVis.config.url;
   this.json = streeVis.config.json;
   this.direction = streeVis.config.direction;
   this.m = this.w = this.h = null;
@@ -42,7 +41,6 @@ streeVis = function() {
   this.stree = null;
   this.tree = null;
   this.rerun = false;
-  this.legacy = false;
   this.orientation();
 
   this.states = {};
@@ -66,9 +64,9 @@ streeVis = function() {
  * @enum {string|boolean}
  */
 streeVis.config = {
-  url: 'simple.json',
+  // url: 'simple.json',
   direction: 'top-bottom',
-  sre: './mathjax-sre.js',
+  sre: './sre_browser.js',
   cdnjs: 'https://cdn.jsdelivr.net/npm/speech-rule-engine/lib/sre_browser.js',
   expanded: false,
   script: null
@@ -169,38 +167,6 @@ streeVis.getContent = function(node) {
   return str;
 };
 
-
-// For the legacy format
-streeVis.prototype.prepare = function(tree) {
-  var snodes = [];
-  for (var node in tree) {
-    snodes = snodes.concat(this.prepareNode(node, tree[node]));
-    delete tree[node];
-  }
-  snodes.sort(function(x, y) {
-    return x.id - y.id;
-  });
-  return snodes;
-};
-
-streeVis.prototype.prepareNode = function(type, node) {
-  if (!node.id) {
-    var snodes = [];
-    for (var i = 0, n; n = node[i]; i++) {
-      snodes = snodes.concat(this.prepareNode(type, n));
-    }
-    return snodes;
-  }
-  node.type = type;
-  if (node.children) {
-    node.children = this.prepare(node.children);
-  }
-  if (node.content) {
-    node.content = this.prepare(node.content);
-  }
-  return [node];
-};
-// End legacy
 
 streeVis.prototype.update = function(source) {
   var duration = d3.event && d3.event.altKey ? 5000 : 500;
@@ -391,11 +357,6 @@ streeVis.prototype.visualiseJson = function(json) {
   this.stree.x0 = this.h / 2;
   this.stree.y0 = 0;
 
-  // Legacy only!
-  if (this.legacy) {
-    this.stree.stree = this.prepare(this.stree.stree)[0];
-  }
-  
   if (this.rerun) {
     this.toggleSome(this.stree.stree);
   } else if (!streeVis.config.expanded) {
@@ -408,9 +369,7 @@ streeVis.prototype.visualiseJson = function(json) {
 
 
 streeVis.prototype.init = function() {
-  this.url ? 
-    d3.json(this.url, goog.bind(this.visualiseJson, this)) :
-    this.visualiseJson(this.json);
+  this.visualiseJson(this.json);
 };
 
 streeVis.currentSVG = null;
@@ -427,7 +386,6 @@ streeVis.run = function(option) {
     }
   }
   streeVis.currentSVG = new streeVis();
-  streeVis.currentSVG.legacy = !!option.legacy;
   streeVis.currentSVG.states = states;
   streeVis.currentSVG.rerun = option.rerun;
   streeVis.currentSVG.init();
@@ -440,8 +398,6 @@ streeVis.changeOrientation = function() {
   } else {
     streeVis.config.direction = 'top-bottom';
   }
-  streeVis.currentSVG ?
-    streeVis.run({rerun: true, legacy: streeVis.currentSVG.legacy}) :
   streeVis.run({rerun: true});
 };
 
@@ -459,35 +415,6 @@ streeVis.collapseAll = function() {
   }
 };
 
-
-streeVis.loadUrl = function(legacy) {
-  var url = document.getElementById('url');
-  var value = url.value;
-  if (!value) {return;}
-  streeVis.config.json = null;
-  streeVis.config.url = value;
-  streeVis.run({legacy: legacy});
-  url.value = '';
-};
-
-
-
-streeVis.handleFileSelect = function(evt, legacy) {
-  var files = evt.target.files; // FileList object
-  // files is a FileList of File objects. List some properties.
-  var reader = new FileReader();
-  var json = null;
-  reader.onload = function(f) {
-    json = JSON.parse(f.target.result);
-    streeVis.config.json = json;
-    streeVis.config.url = '';
-    streeVis.run({legacy: legacy});
-  };
-  
-  reader.readAsText(files[0]);
-  // var output = [];
-  // document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
-};
 
 streeVis.render = function(text) {
   var element = document.getElementById('rendered');
@@ -518,68 +445,10 @@ streeVis.show = function(mml) {
   if (!mml) return;
   streeVis.showMathml(mml);
   streeVis.render(mml);
-  streeVis.config.json = streeVis.treeJson(mml);
-  streeVis.config.url = '';
+  streeVis.config.json = sre.System.getInstance().toJson(mml);
   streeVis.showJson();
   streeVis.run();
 };
-
-// Computes tree and JSON.
-streeVis.treeJson = function(mml) {
-  var node = sre.DomUtil.parseInput(mml, sre.System.Error);
-  var stree = sre.Semantic.getTree(node);
-  if (!stree) return null;
-  streeVis.showSemantics(stree);
-  if (stree.toJson) {
-    return stree.toJson();
-  }
-  return streeVis.treeHTML(stree.xml());
-};
-
-// This will be replaced by the dedicated SRE function.
-streeVis.treeHTML = function(tree) {
-  var object = {};
-  streeVis.treeHTML_(tree.childNodes[0], object);
-  object = {stree: object};
-  return object;
-};
-
-streeVis.treeHTML_ = function(element, object) {
-  object['type'] = element.nodeName;
-  var attributes = element.attributes;
-  for (var i = 0; i < attributes.length; i++) {
-    object[attributes[i].nodeName] = attributes[i].nodeValue;
-  }
-  var nodeList = element.childNodes;
-  if (nodeList != null) {
-    if (nodeList.length) {
-      for (var i = 0; i < nodeList.length; i++) {
-        var node = nodeList[i];
-        if (node.nodeType == 3) {
-          object['$t'] = object['$t'] || '';
-          object['$t'] += node.nodeValue;
-          continue;
-        }
-        streeVis.addChildren('children', node, object);
-        streeVis.addChildren('content', node, object);
-      }
-    }
-  }
-};
-
-
-streeVis.addChildren = function(name, element, object) {
-  if (element.nodeName === name) {
-    object[name] = object[name] || [];
-    var children = element.childNodes;
-    for (var j = 0, child; child = children[j]; j++) {
-      var newObject = {};
-      streeVis.treeHTML_(child, newObject);
-      object[name].push(newObject);
-    }
-  }
-};
-
 
 streeVis.removeLocalLibrary = function() {
   if (streeVis.config.script) {
@@ -593,15 +462,6 @@ streeVis.loadLocalLibrary = function() {
   var scr = document.createElement('script');
   scr.type = 'text/javascript';
   scr.src = streeVis.config.sre;
-  document.head ? document.head.appendChild(scr) :
-    document.body.appendChild(scr);
-};
-
-streeVis.loadLatestLibrary = function() {
-  streeVis.removeLocalLibrary();
-  var scr = document.createElement('script');
-  scr.type = 'text/javascript';
-  scr.src = streeVis.config.cdnjs;
   document.head ? document.head.appendChild(scr) :
     document.body.appendChild(scr);
 };
