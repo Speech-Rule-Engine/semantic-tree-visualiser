@@ -45,9 +45,14 @@ streeVis = function() {
 
   this.states = {};
   
-  this.diagonal = d3.svg.diagonal()
-    .projection(function(d) {
-      return [this.orientX(d), this.orientY(d)]; }.bind(this));
+  this.diagonal = function link(d) {
+  return "M" + d.source.y + "," + d.source.x
+      + "C" + (d.source.y + d.target.y) / 2 + "," + d.source.x
+      + " " + (d.source.y + d.target.y) / 2 + "," + d.target.x
+      + " " + d.target.y + "," + d.target.x;
+  };// d3.svg.diagonal()
+  //   .projection(function(d) {
+  //     return [this.orientX(d), this.orientY(d)]; }.bind(this));
 
   this.svg = d3.select('#body').append('svg:svg');
   this.vis = this.svg
@@ -91,7 +96,7 @@ streeVis.prototype.orientation = function() {
     this.xAft = -3;
     this.yFor = '-.5em';
     this.yAft = '1.2em';
-    this.tree = d3.layout.tree().size([this.w, this.h]);
+    this.tree = d3.tree().size([this.w, this.h]);
 
 } else {
     streeVis.prototype.orientX = function(source, zero) {
@@ -110,7 +115,7 @@ streeVis.prototype.orientation = function() {
   this.xAft = 10;
   this.yFor = '-.1em';
   this.yAft = '0.35em';
-  this.tree = d3.layout.tree().size([this.h, this.w]);
+  this.tree = d3.tree().size([this.h, this.w]);
 }
 
 };
@@ -169,106 +174,161 @@ streeVis.getContent = function(node) {
 
 
 streeVis.prototype.update = function(source) {
+  console.log('Updating');
   var duration = d3.event && d3.event.altKey ? 5000 : 500;
 
   // Compute the new tree layout.
-  var nodes = this.tree.nodes(this.stree.stree).reverse();
+  // var nodes = this.tree.nodes(this.stree.stree).reverse();
+  // var nodes = this.tree.nodes(this.stree.stree).reverse();
+
+  // NEW
+  console.log(this.stree.stree);
+  const root = d3.hierarchy(this.stree.stree);
+  console.log(root);
+  root.dx = 10;
+  root.dy = this.w / (root.height + 1);
+  console.log(root.dx);
+  console.log(root.dy);
+  var nodes = d3.tree().nodeSize([root.dx, root.dy])(root);
+  console.log(nodes);
 
   // Normalize for fixed-depth.
   // nodes.forEach(function(d) { d.y = d.depth * 180; });
 
   // Update the nodes…
-  var node = this.vis.selectAll('g.node')
-      .data(nodes, function(d) { return d.id || (d.id = ++i); });
+  // var node = this.vis.selectAll('g.node')
+  //     .data(nodes, function(d) { return d.id || (d.id = ++i); });
+  // console.log(node);
 
-  // Enter any new nodes at the parent's previous position.
-  var nodeEnter = node.enter().append('svg:g')
-      .attr('class', 'node')
-        .attr('transform', function(d) {
-          return 'translate(' + this.orientX(source, true) + ',' +
-            this.orientY(source, true) + ')'; }.bind(this))
-        .on('click', function(d) {
-          this.toggle(d); this.update(d); }.bind(this));
+  const g = this.svg.append("g")
+        .attr("font-family", "sans-serif")
+        .attr("font-size", 10)
+        .attr("transform", `translate(${root.dy / 3},${root.dx + 100})`);
+    
+  const link = g.append("g")
+    .attr("fill", "none")
+    .attr("stroke", "#555")
+    .attr("stroke-opacity", 0.4)
+    .attr("stroke-width", 1.5)
+  .selectAll("path")
+    .data(root.links())
+    .join("path")
+      .attr("d", d3.linkHorizontal()
+          .x(d => d.y)
+          .y(d => d.x));
+  
+  const node = g.append("g")
+      .attr("stroke-linejoin", "round")
+      .attr("stroke-width", 3)
+    .selectAll("g")
+    .data(root.descendants())
+    .join("g")
+      .attr("transform", d => `translate(${d.y},${d.x})`);
 
-  nodeEnter.append('svg:circle')
-      .attr('r', 1e-6)
-    .style('fill', function(d) {
-      return d._children ? 'lightsteelblue' : '#fff'; });
+  node.append("circle")
+      .attr("fill", d => d.children ? "#555" : "#999")
+      .attr("r", 2.5);
 
-  nodeEnter.append('svg:title')
-    .text(function(d) { return d.type + ': ' + d.role; });
-
-  nodeEnter.append('svg:text')
-    .attr('x', function(d) {
-      return d.children || d._children ? this.xFor : this.xAft; }.bind(this))
-    .attr('dy', function(d) {
-      return d.children || d._children ? this.yFor : this.yAft; }.bind(this))
-    .attr('text-anchor', function(d) {
-      return d.children || d._children ? 'end' : 'start'; })
-    .text(function(d) { return streeVis.getContent(d); })
-    .style('font-size', '20')
-    .style('fill', function(d) { return streeVis.getColor(d); });
+  node.append("text")
+      .attr("dy", "0.31em")
+      .attr("x", d => d.children ? -6 : 6)
+      .attr("text-anchor", d => d.children ? "end" : "start")
+      .text(d => d.data.name)
+    .clone(true).lower()
+      .attr("stroke", "white");
+  
 
 
-  // Transition nodes to their new position.
-  var nodeUpdate = node.transition()
-      .duration(duration)
-        .attr('transform', function(d) {
-          return 'translate(' + this.orientX(d) + ',' + this.orientY(d) + ')'; }.bind(this));
+  
+  // // Enter any new nodes at the parent's previous position.
+  // var nodeEnter = node.enter().append('svg:g')
+  //     .attr('class', 'node')
+  //       .attr('transform', function(d) {
+  //         return 'translate(' + this.orientX(source, true) + ',' +
+  //           this.orientY(source, true) + ')'; }.bind(this))
+  //       .on('click', function(d) {
+  //         this.toggle(d); this.update(d); }.bind(this));
 
-  nodeUpdate.select('circle')
-      .attr('r', 4.5)
-      .style('fill', function(d) { return d._children ? 'lightsteelblue' : '#fff'; });
+  // nodeEnter.append('svg:circle')
+  //     .attr('r', 1e-6)
+  //   .style('fill', function(d) {
+  //     return d._children ? 'lightsteelblue' : '#fff'; });
 
-  nodeUpdate.select('text')
-      .style('fill-opacity', 1);
+  // nodeEnter.append('svg:title')
+  //   .text(function(d) { return d.type + ': ' + d.role; });
 
-  // Transition exiting nodes to the parent's new position.
-  var nodeExit = node.exit().transition()
-      .duration(duration)
-        .attr('transform', function(d) {
-          return 'translate(' + this.orientX(source) + ',' + this.orientY(source) + ')'; }.bind(this))
-      .remove();
+  // nodeEnter.append('svg:text')
+  //   .attr('x', function(d) {
+  //     return d.children || d._children ? this.xFor : this.xAft; }.bind(this))
+  //   .attr('dy', function(d) {
+  //     return d.children || d._children ? this.yFor : this.yAft; }.bind(this))
+  //   .attr('text-anchor', function(d) {
+  //     return d.children || d._children ? 'end' : 'start'; })
+  //   .text(function(d) { return streeVis.getContent(d); })
+  //   .style('font-size', '20')
+  //   .style('fill', function(d) { return streeVis.getColor(d); });
 
-  nodeExit.select('circle')
-      .attr('r', 1e-6);
 
-  nodeExit.select('text')
-      .style('fill-opacity', 1e-6);
+  // // Transition nodes to their new position.
+  // var nodeUpdate = node.transition()
+  //     .duration(duration)
+  //       .attr('transform', function(d) {
+  //         return 'translate(' + this.orientX(d) + ',' + this.orientY(d) + ')'; }.bind(this));
 
-  // Update the links…
-  var link = this.vis.selectAll('path.link')
-      .data(this.tree.links(nodes), function(d) { return d.target.id; });
+  // nodeUpdate.select('circle')
+  //     .attr('r', 4.5)
+  //     .style('fill', function(d) { return d._children ? 'lightsteelblue' : '#fff'; });
 
-  // Enter any new links at the parent's previous position.
-  link.enter().insert('svg:path', 'g')
-      .attr('class', 'link')
-    .attr('d', function(d) {
-      var o = {x: source.x0, y: source.y0};
-      return this.diagonal({source: o, target: o});
-    }.bind(this))
-    .transition()
-      .duration(duration)
-    .attr('d', this.diagonal.bind(this));
+  // nodeUpdate.select('text')
+  //     .style('fill-opacity', 1);
 
-  // Transition links to their new position.
-  link.transition()
-      .duration(duration)
-    .attr('d', this.diagonal.bind(this));
+  // // Transition exiting nodes to the parent's new position.
+  // var nodeExit = node.exit().transition()
+  //     .duration(duration)
+  //       .attr('transform', function(d) {
+  //         return 'translate(' + this.orientX(source) + ',' + this.orientY(source) + ')'; }.bind(this))
+  //     .remove();
 
-  // Transition exiting nodes to the parent's new position.
-  link.exit().transition()
-      .duration(duration)
-    .attr('d', function(d) {
-      var o = {x: source.x, y: source.y};
-      return this.diagonal({source: o, target: o});
-    }.bind(this))
-      .remove();
-  // Stash the old positions for transition.
-  nodes.forEach(function(d) {
-    d.x0 = d.x;
-    d.y0 = d.y;
-  });
+  // nodeExit.select('circle')
+  //     .attr('r', 1e-6);
+
+  // nodeExit.select('text')
+  //     .style('fill-opacity', 1e-6);
+
+  // // Update the links…
+  // console.log(this.vis.selectAll('path.link'));
+  // var link = this.vis.selectAll('path.link')
+  //     .data(this.tree.links(nodes), function(d) { return d.target.id; });
+
+  // // Enter any new links at the parent's previous position.
+  // link.enter().insert('svg:path', 'g')
+  //     .attr('class', 'link')
+  //   .attr('d', function(d) {
+  //     var o = {x: source.x0, y: source.y0};
+  //     return this.diagonal({source: o, target: o});
+  //   }.bind(this))
+  //   .transition()
+  //     .duration(duration)
+  //   .attr('d', this.diagonal.bind(this));
+
+  // // Transition links to their new position.
+  // link.transition()
+  //     .duration(duration)
+  //   .attr('d', this.diagonal.bind(this));
+
+  // // Transition exiting nodes to the parent's new position.
+  // link.exit().transition()
+  //     .duration(duration)
+  //   .attr('d', function(d) {
+  //     var o = {x: source.x, y: source.y};
+  //     return this.diagonal({source: o, target: o});
+  //   }.bind(this))
+  //     .remove();
+  // // Stash the old positions for transition.
+  // nodes.forEach(function(d) {
+  //   d.x0 = d.x;
+  //   d.y0 = d.y;
+  // });
 };
 
 
