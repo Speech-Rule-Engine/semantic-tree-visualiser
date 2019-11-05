@@ -1,10 +1,12 @@
 {
   "name": "sre-visualiser",
-  "version": "0.1.0",
+  "version": "0.1.4",
   "description": "Visualiser for semantic tree generated in SRE.",
   "directories": {},
   "bin": {},
-  "scripts": {},
+  "scripts": {
+    "postinstall": "ln -s .. node_modules"
+  },
   "maintainers": [
     "Volker Sorge <Volker.Sorge@gmail.com> (http://www.cs.bham.ac.uk/~vxs)"
   ],
@@ -33,7 +35,10 @@
     "index.html",
     "LICENSE",
     "README.md",
-    "src/visualise.js"
+    "lib/visualise.js",
+    "styles/style.css",
+    "styles/texture-noise.png",
+    "styles/tree.css"
   ],
   "main": "src/visualise.js"
 }
