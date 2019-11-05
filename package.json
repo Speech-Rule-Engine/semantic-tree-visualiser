@@ -1,0 +1,39 @@
+{
+  "name": "sre-visualiser",
+  "version": "0.1.0",
+  "description": "Visualiser for semantic tree generated in SRE.",
+  "directories": {},
+  "bin": {},
+  "scripts": {},
+  "maintainers": [
+    "Volker Sorge <Volker.Sorge@gmail.com> (http://www.cs.bham.ac.uk/~vxs)"
+  ],
+  "bugs": {
+    "email": "volker.sorge@gmail.com",
+    "url": "https://github.com/zorkow/speech-rule-engine/issues"
+  },
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zorkow/semantic-tree-visualiser"
+  },
+  "keywords": [
+    "screen-reader",
+    "semantic tree",
+    "math"
+  ],
+  "homepage": "https://github.com/zorkow/semantic-tree-visualiser",
+  "dependencies": {
+    "mathjax": ">=3.0.0",
+    "d3": "=3.5.17",
+    "speech-rule-engine": "*"
+  },
+  "devDependencies": {},
+  "files": [
+    "index.html",
+    "LICENSE",
+    "README.md",
+    "src/visualise.js"
+  ],
+  "main": "src/visualise.js"
+}
