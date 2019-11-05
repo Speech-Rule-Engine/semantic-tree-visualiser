@@ -5,51 +5,22 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <title>Semantic Tree Visualisation</title>
     <link type="text/css" rel="stylesheet" href="styles/style.css"/>
-    <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
-    <!-- <script type="text/javascript" src="src/d3/d3.js"></script> -->
-    <!-- <script type="text/javascript" src="src/d3/d3.layout.js"></script> -->
-    <style type="text/css">
-
-html {
-    overflow-y: scroll; 
-    }
-    
-.node circle {
-  cursor: pointer;
-  fill: #fff;
-  stroke: steelblue;
-  stroke-width: 1.5px;
-}
-
-.node text {
-  font-size: 11px;
-}
-
-path.link {
-  fill: none;
-  stroke: #ccc;
-  stroke-width: 1.5px;
-}
-
-    </style>
+    <!-- <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script> -->
+    <script type="text/javascript" src="node_modules/d3/d3.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="styles/tree.css"/>
   </head>
   <body>
-    <script type="text/javascript" src="src/visualise.js"></script>
+    <script type="text/javascript" src="lib/visualise.js"></script>
     <script type="text/javascript">
       streeVis.config.expanded = true;
     </script>
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-      extensions: ["[a11y]/explorer.js"],
-      jax: ["input/TeX", "input/MathML"]
-      }
-      );
+    <script async src="node_modules/speech-rule-engine/lib/sre_browser.js"></script>
+    <script>
+     MathJax = {
+       paths: {sre: "node_modules/speech-rule-engine/lib/sre_browser.js"}
+     };
     </script>
-    <!-- <script src="http://localhost/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML-full"></script> -->
-<script async src="https://cdn.jsdelivr.net/npm/speech-rule-engine/lib/sre_browser.js"></script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML-full"></script> -->
-<!-- <form> -->
+    <script id="MathJax-script" async src="node_modules/mathjax/es5/tex-mml-chtml.js"></script>
       <table border="0" cellpadding="0" cellspacing="2">
         <tr>
           <td rowspan="4">
@@ -118,7 +89,7 @@ path.link {
     <script type="text/javascript">
       streeVis.reload();
     </script>
-    </body>
+  </body>
 </html>
 
 </body> </html>
