@@ -1,5 +1,6 @@
 body {
-  background: url(texture-noise.png);
+  background: #e6e6e6;
+  color: black;
   overflow: hidden;
   margin: 0;
   font-size: 14px;

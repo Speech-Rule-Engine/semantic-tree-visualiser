@@ -37,8 +37,7 @@
     "README.md",
     "lib/visualise.js",
     "styles/style.css",
-    "styles/texture-noise.png",
     "styles/tree.css"
   ],
-  "main": "src/visualise.js"
+  "main": "lib/visualise.js"
 }
