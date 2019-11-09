@@ -27,7 +27,7 @@
   "homepage": "https://github.com/zorkow/semantic-tree-visualiser",
   "dependencies": {
     "mathjax": ">=3.0.0",
-    "d3": "=3.5.17",
+    "d3": ">=5.0.0",
     "speech-rule-engine": "*"
   },
   "devDependencies": {},
@@ -37,8 +37,7 @@
     "README.md",
     "lib/visualise.js",
     "styles/style.css",
-    "styles/texture-noise.png",
     "styles/tree.css"
   ],
-  "main": "src/visualise.js"
+  "main": "lib/visualise.js"
 }
