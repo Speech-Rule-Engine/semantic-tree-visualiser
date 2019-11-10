@@ -22,19 +22,22 @@
     <script id="MathJax-script" async src="node_modules/mathjax/es5/tex-mml-chtml.js"></script>
       <table border="0" cellpadding="0" cellspacing="2">
         <tr>
-          <td rowspan="4">
-              <textarea id="input" rows="7" cols="40" style="font-size:120%"></textarea>
+          <td rowspan="5">
+              <textarea id="input" rows="7" cols="35" style="font-size:120%"></textarea>
           </td>
         <td>
           <input align="bottom" id="translate" type="button" value="LaTeX (MathJax)" onclick="streeVis.translateTex(display.checked)"></input>
           </td>
           <td align="left">
-          <input checked align="right" type="checkbox" id="display" value="display">Display</input>
-        </td>
-          <td align="left">
-          <input align="bottom" id="load local" type="button" value="Load Local SRE" onclick="streeVis.loadLocalLibrary()"></input>
+            <input checked align="right" type="checkbox" id="display" value="display">Display</input>
           </td>
-            <td rowspan="4">
+          <td align="left">
+            <input align="bottom" id="load local" type="button" value="Load Local SRE" onclick="streeVis.loadLocalLibrary()"></input>
+          </td>
+          <td align="left">
+            <input type="checkbox" id="semanticId" value="semanticId">Id</input>
+          </td>
+            <td rowspan="5">
             <div id="rendered" style="border:0px solid; padding:3px;"><math></math></div>
         </td>
       </tr>
@@ -43,11 +46,14 @@
             <input align="bottom" id="translate" type="button" value="MathML (MathJax)" onclick="streeVis.translateMathML()"></input>
           </td>
           <td align="left">
-          <input type="checkbox" id="showMathml" value="showMathml">Show MathML</input>
+            <input type="checkbox" id="showMathml" value="showMathml">Show MathML</input>
           </td>
-        <td align="left">
-          <input id="orientation" type="button" value="Orientation" onclick="streeVis.changeOrientation()"></input>
-        </td>
+          <td align="left">
+            <input id="orientation" type="button" value="Orientation" onclick="streeVis.changeOrientation()"></input>
+          </td>
+          <td align="left">
+            <input type="checkbox" id="semanticType" value="semanticType">Type</input>
+          </td>
         </tr>
         <tr>
           <td>
@@ -59,6 +65,9 @@
         <td align="left">
           <input id="expand" type="button" value="Expand" onclick="streeVis.expandAll()"></input>
         </td>
+          <td align="left">
+            <input type="checkbox" id="semanticRole" value="semanticRole">Role</input>
+          </td>
         </tr>
         <tr>
         <td align="bottom">
@@ -70,8 +79,22 @@
         <td align="left">
           <input id="collapse" type="button" value="Collapse" onclick="streeVis.collapseAll()"></input>
         </td>
+          <td align="left">
+            <input type="checkbox" id="semanticFont" value="semanticFont">Font</input>
+          </td>
         </tr>
-  </table>
+        <tr>
+          <td align="bottom">
+          </td>
+          <td>
+          </td>
+          <td align="left">
+          </td>
+          <td align="left">
+            <input type="checkbox" id="semanticAnnotation" value="semanticAnnotation">Annotation</input>
+          </td>
+        </tr>
+      </table>
     </form>
     <hr/>
 
