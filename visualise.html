@@ -89,7 +89,8 @@
         <td align="bottom">
           <input align="bottom" id="keep" type="button" value="Keep" onclick="streeVis.keep()"></input>
         </td>
-        <td>
+        <td align="left">
+          <input type="checkbox" id="showEnrMml" value="showEnrMml">Show enrMML</input>
         </td>
         <td align="left">
           <input align="bottom" id="load local" type="button" value="Load Local SRE" onclick="streeVis.loadLocalLibrary()"></input>
@@ -114,6 +115,9 @@
   </div>
   <div style="border:1px solid; padding:3px">
     <pre id="semantics"></pre>
+  </div>
+  <div style="border:1px solid; padding:3px">
+    <pre id="enrmml"></pre>
   </div>
   <script type="text/javascript">
     streeVis.reload();
