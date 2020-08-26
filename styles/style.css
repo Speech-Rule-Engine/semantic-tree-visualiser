@@ -88,3 +88,33 @@ a:hover {
   font-size: 12px;
   color: #999;
 }
+
+::-webkit-scrollbar {
+  height: 4px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+
+.scrollbox {
+  padding-top: 10px;
+  overflow-y: hidden;
+  overflow-x: auto;
+  white-space: nowrap;
+  width: 500px;
+  height: 20pt;
+  font-size:10pt;
+}
