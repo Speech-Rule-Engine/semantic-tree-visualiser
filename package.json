@@ -27,7 +27,7 @@
   "homepage": "https://github.com/zorkow/semantic-tree-visualiser",
   "dependencies": {
     "mathjax": ">=3.0.0",
-    "d3": ">=5.0.0",
+    "d3": ">=6.0.0",
     "speech-rule-engine": "*"
   },
   "devDependencies": {},
