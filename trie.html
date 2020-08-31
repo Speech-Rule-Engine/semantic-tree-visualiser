@@ -13,17 +13,17 @@
   <script type="text/javascript" src="lib/visualise.js"></script>
   <script type="text/javascript">
     streeVis.config.expanded = true;
+    streeVis.config.direction = 'left-right';
   </script>
   <script async src="https://cdn.jsdelivr.net/npm/speech-rule-engine/lib/sre_browser.js"></script>
 
 <input align="bottom" id="load local" type="button" value="Load Local SRE" onclick="streeVis.loadLocalLibrary()"></input>
-<input align="bottom" id="load local" type="button" value="Render Trie" onclick="streeVis.renderTrie()"></input>
-
+<input align="bottom" id="load local" type="button" value="Render Trie" onclick="streeVis.renderRules()"></input>
+<input type="file" id="files"  accept=".json" name="file" onchange="streeVis.handleFileSelect(event)"></input>
   <div id="body"></div>
 
   <script type="text/javascript">
-  console.log('here');
-    streeVis.renderTrie();
+  streeVis.loadLocalLibrary();
   </script>
 </body>
 </html>
