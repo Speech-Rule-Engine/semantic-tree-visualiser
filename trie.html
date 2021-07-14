@@ -1,0 +1,35 @@
+<!-- Copyright (c) 2016 The MathJax Consortium -->
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  <title>Semantic Tree Visualisation</title>
+  <link type="text/css" rel="stylesheet" href="styles/style.css"/>
+  <script type="text/javascript" src="node_modules/d3/dist/d3.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/d3/dist/d3.min.js"></script>
+  <link type="text/css" rel="stylesheet" href="styles/tree.css"/>
+  <style>
+    .scrollbox {
+    padding-top: 100px;
+    overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <script type="text/javascript" src="lib/visualise.js"></script>
+  <script type="text/javascript">
+    streeVis.config.expanded = true;
+    streeVis.config.direction = 'left-right';
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/speech-rule-engine/lib/sre_browser.js"></script>
+
+<input align="bottom" id="load local" type="button" value="Load Local SRE" onclick="streeVis.loadLocalLibrary()"></input>
+<input align="bottom" id="load local" type="button" value="Render Trie" onclick="streeVis.renderRules()"></input>
+<input type="file" id="files"  accept=".json" name="file" onchange="streeVis.handleFileSelect(event)"></input>
+  <div id="body"></div>
+
+  <script type="text/javascript">
+  streeVis.loadLocalLibrary();
+  </script>
+</body>
+</html>
