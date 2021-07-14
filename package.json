@@ -3,7 +3,6 @@
   "version": "0.4.0",
   "description": "Visualiser for semantic tree generated in SRE.",
   "directories": {},
-  "bin": {},
   "scripts": {
     "postinstall": "ln -s .. node_modules"
   },
@@ -26,8 +25,8 @@
   ],
   "homepage": "https://github.com/zorkow/semantic-tree-visualiser",
   "dependencies": {
-    "mathjax": ">=3.0.0",
     "d3": ">=6.0.0",
+    "mathjax": ">=3.0.0",
     "speech-rule-engine": "*"
   },
   "devDependencies": {},
