@@ -4,7 +4,8 @@
   "description": "Visualiser for semantic tree generated in SRE.",
   "directories": {},
   "scripts": {
-    "postinstall": "ln -s .. node_modules"
+    "postinstall": "ln -s .. node_modules; rm index.html; ln -s visualise-local.html index.html",
+    "clean": "rm index.html; ln -s visualise.html index.html"
   },
   "maintainers": [
     "Volker Sorge <Volker.Sorge@gmail.com> (http://www.cs.bham.ac.uk/~vxs)"

@@ -1,0 +1,146 @@
+<!-- Copyright (c) 2016 The MathJax Consortium -->
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  <title>Semantic Tree Visualisation</title>
+  <link type="text/css" rel="stylesheet" href="styles/style.css"/>
+  <script type="text/javascript" src="node_modules/d3/dist/d3.min.js"></script>
+  <link type="text/css" rel="stylesheet" href="styles/tree.css"/>
+</head>
+<body>
+  <script type="text/javascript" src="lib/visualise.js"></script>
+  <script type="text/javascript">
+    streeVis.config.expanded = true;
+  </script>
+  <script async src="node_modules/speech-rule-engine/lib/sre_browser.js"></script>
+  <script>
+    MathJax = {
+    paths: {sre: "node_modules/speech-rule-engine/lib/sre_browser.js"}
+    };
+  </script>
+  <script id="MathJax-script" async src="node_modules/mathjax/es5/tex-mml-chtml.js"></script>
+  <table><tr><td style="vertical-align:top">
+    <table border="0" cellpadding="0" cellspacing="2">
+      <tr>
+        <td rowspan="6">
+          <textarea id="input" rows="7" cols="35" style="font-size:120%"></textarea>
+        </td>
+        <th>Rendering</th>
+        <th>Display</th>
+        <th>Tree Ops</th>
+        <th>Hover Options</th>
+        <th>Speech</th>
+      </tr>
+      <tr>
+        <td>
+          <input align="bottom" id="translate" type="button" value="LaTeX (MathJax)" onclick="streeVis.translateTex(display.checked)"></input>
+        </td>
+        <td align="left">
+          <input checked align="right" type="checkbox" id="display" value="display">Display</input>
+        </td>
+        <td align="left">
+          <input id="orientation" type="button" value="Orientation" onclick="streeVis.changeOrientation()"></input>
+        </td>
+        <td align="left">
+          <input type="checkbox" id="semanticId" value="semanticId">Id</input>
+        </td>
+        <td align="left">
+          <select id="speech">
+            <option>None</option>
+            <option>Shallow</option>
+            <option>Deep</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <input align="bottom" id="translate" type="button" value="MathML (MathJax)" onclick="streeVis.translateMathML()"></input>
+        </td>
+        <td align="left">
+          <input type="checkbox" id="showMathml" value="showMathml">Show MathML</input>
+        </td>
+        <td align="left">
+          <input id="collapse" type="button" value="Collapse" onclick="streeVis.collapseAll()"></input>
+        </td>
+        <td align="left">
+          <input type="checkbox" id="semanticType" value="semanticType">Type</input>
+        </td>
+        <td align="left">
+          <select id="domain">
+            <option>MathSpeak</option>
+            <option>ClearSpeak</option>
+            <option>Default</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <input align="bottom" id="translate" type="button" value="MathML (direct)" onclick="streeVis.translateSRE()"></input>
+        </td>
+        <td align="left">
+          <input type="checkbox" id="showJson" value="showJson">Show Json</input>
+        </td>
+        <td align="left">
+          <input id="expand" type="button" value="Expand" onclick="streeVis.expandAll()"></input>
+        </td>
+        <td align="left">
+          <input type="checkbox" id="semanticRole" value="semanticRole">Role</input>
+        </td>
+        <td align="left">
+          <select id="locale">
+            <option>en</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td align="bottom">
+        </td>
+        <td>
+          <input type="checkbox" id="showSemantics" value="showSemantics">Show Semantics</input>
+        </td>
+        <td align="left">
+        </td>
+        <td align="left">
+          <input type="checkbox" id="semanticFont" value="semanticFont">Font</input>
+        </td>
+      </tr>
+      <tr>
+        <td align="bottom">
+          <input align="bottom" id="keep" type="button" value="Keep" onclick="streeVis.keep()"></input>
+        </td>
+        <td align="left">
+          <input type="checkbox" id="showEnrMml" value="showEnrMml">Show enrMML</input>
+        </td>
+        <td align="left">
+          <input align="bottom" id="load local" type="button" value="Load Local SRE" onclick="streeVis.loadLocalLibrary()"></input>
+        </td>
+        <td align="left">
+          <input type="checkbox" id="semanticAnnotation" value="semanticAnnotation">Annotation</input>
+        </td>
+      </tr>
+    </table>
+  </td>
+  <td>
+    <div id="rendered" style="font-size:150%; border:0px solid; padding:3px;"><math></math></div>
+  </td></tr></table>
+  <hr/>
+
+  <div id="body"></div>
+  <div style="border:1px solid; padding:3px">
+    <pre id="mathml"></pre>
+  </div>
+  <div style="border:1px solid; padding:3px">
+    <pre id="json"></pre>
+  </div>
+  <div style="border:1px solid; padding:3px">
+    <pre id="semantics"></pre>
+  </div>
+  <div style="border:1px solid; padding:3px">
+    <pre id="enrmml"></pre>
+  </div>
+  <script type="text/javascript">
+    streeVis.reload();
+  </script>
+</body>
+</html>
