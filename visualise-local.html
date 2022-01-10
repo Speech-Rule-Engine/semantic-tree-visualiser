@@ -13,12 +13,13 @@
   <script type="text/javascript">
     streeVis.config.expanded = true;
   </script>
-  <script async src="node_modules/speech-rule-engine/lib/sre_browser.js"></script>
+  <script async src="node_modules/speech-rule-engine/lib/sre.js"></script>
   <script>
     MathJax = {
-    paths: {sre: "node_modules/speech-rule-engine/lib/sre_browser.js"}
+    paths: {sre: "node_modules/speech-rule-engine/lib/sre.js"}
     };
-  </script>
+</script>
+<script type="text/x-sre-config">{json: "../speech-rule-engine/lib/mathmaps"} </script>
   <script id="MathJax-script" async src="node_modules/mathjax/es5/tex-mml-chtml.js"></script>
   <table><tr><td style="vertical-align:top">
     <table border="0" cellpadding="0" cellspacing="2">
