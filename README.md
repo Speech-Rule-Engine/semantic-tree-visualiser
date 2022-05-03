@@ -25,4 +25,4 @@ For left-right trees, change the ```direction``` option to ```left-right```.
 
 ## Test
 
-Play with the visualiser online on [github pages](http://zorkow.github.io/semantic-tree-visualiser/visualise.html).
+Play with the visualiser online on [github pages](http://speech-rule-engine.github.io/semantic-tree-visualiser/visualise.html).

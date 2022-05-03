@@ -28,9 +28,8 @@
   "dependencies": {
     "d3": ">=6.0.0",
     "mathjax": ">=3.0.0",
-    "speech-rule-engine": "*"
+    "speech-rule-engine": "^4.0.4"
   },
-  "devDependencies": {},
   "files": [
     "index.html",
     "LICENSE",
