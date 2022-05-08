@@ -1,8 +1,8 @@
 <!-- Copyright (c) 2016 The MathJax Consortium -->
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
-<html>
+<html lang="en"/>
 <head>
-  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
   <title>Semantic Tree Visualisation</title>
   <link type="text/css" rel="stylesheet" href="styles/style.css"/>
   <script type="text/javascript" src="node_modules/d3/dist/d3.min.js"></script>
@@ -25,7 +25,7 @@
     <table border="0" cellpadding="0" cellspacing="2">
       <tr>
         <td rowspan="6">
-          <textarea id="input" rows="7" cols="35" style="font-size:120%"></textarea>
+          <textarea id="input" rows="7" cols="35" style="font-size:120%" aria-label="Formula input"></textarea>
         </td>
         <th>Rendering</th>
         <th>Display</th>
@@ -38,16 +38,16 @@
           <input align="bottom" id="translate" type="button" value="LaTeX (MathJax)" onclick="streeVis.translateTex(display.checked)"></input>
         </td>
         <td align="left">
-          <input checked align="right" type="checkbox" id="display" value="display">Display</input>
+          <input checked align="right" type="checkbox" id="display" value="display"><label for="display">Display</label></input>
         </td>
         <td align="left">
           <input id="orientation" type="button" value="Orientation" onclick="streeVis.changeOrientation()"></input>
         </td>
         <td align="left">
-          <input type="checkbox" id="semanticId" value="semanticId">Id</input>
+          <input type="checkbox" id="semanticId" value="semanticId"><label for="semanticId">Id</label></input>
         </td>
         <td align="left">
-          <select id="speech">
+          <select id="speech" aria-label="Speech nesting depth">
             <option>None</option>
             <option>Shallow</option>
             <option>Deep</option>
@@ -59,16 +59,16 @@
           <input align="bottom" id="translate" type="button" value="MathML (MathJax)" onclick="streeVis.translateMathML()"></input>
         </td>
         <td align="left">
-          <input type="checkbox" id="showMathml" value="showMathml">Show MathML</input>
+          <input type="checkbox" id="showMathml" value="showMathml"><label for="showMathml">Show MathML</label></input>
         </td>
         <td align="left">
           <input id="collapse" type="button" value="Collapse" onclick="streeVis.collapseAll()"></input>
         </td>
         <td align="left">
-          <input type="checkbox" id="semanticType" value="semanticType">Type</input>
+          <input type="checkbox" id="semanticType" value="semanticType"><label for="semanticType">Type</label></input>
         </td>
         <td align="left">
-          <select id="domain">
+          <select id="domain" aria-label="Speech rule set">
             <option>MathSpeak</option>
             <option>ClearSpeak</option>
             <option>Default</option>
@@ -80,16 +80,16 @@
           <input align="bottom" id="translate" type="button" value="MathML (direct)" onclick="streeVis.translateSRE()"></input>
         </td>
         <td align="left">
-          <input type="checkbox" id="showJson" value="showJson">Show Json</input>
+          <input type="checkbox" id="showJson" value="showJson"><label for="showJson">Show Json</label></input>
         </td>
         <td align="left">
           <input id="expand" type="button" value="Expand" onclick="streeVis.expandAll()"></input>
         </td>
         <td align="left">
-          <input type="checkbox" id="semanticRole" value="semanticRole">Role</input>
+          <input type="checkbox" id="semanticRole" value="semanticRole"><label for="semanticRole">Role</label></input>
         </td>
         <td align="left">
-          <select id="locale">
+          <select id="locale" aria-label="Speech locale">
             <option>en</option>
           </select>
         </td>
@@ -98,12 +98,12 @@
         <td align="bottom">
         </td>
         <td>
-          <input type="checkbox" id="showSemantics" value="showSemantics">Show Semantics</input>
+          <input type="checkbox" id="showSemantics" value="showSemantics"><label for="showSemantics">Show Semantics</label></input>
         </td>
         <td align="left">
         </td>
         <td align="left">
-          <input type="checkbox" id="semanticFont" value="semanticFont">Font</input>
+          <input type="checkbox" id="semanticFont" value="semanticFont"><label for="semanticFont">Font</label></input>
         </td>
       </tr>
       <tr>
@@ -111,13 +111,13 @@
           <input align="bottom" id="keep" type="button" value="Keep" onclick="streeVis.keep()"></input>
         </td>
         <td align="left">
-          <input type="checkbox" id="showEnrMml" value="showEnrMml">Show enrMML</input>
+          <input type="checkbox" id="showEnrMml" value="showEnrMml"><label for="showEnrMml">Show enrMML</label></input>
         </td>
         <td align="left">
           <input align="bottom" id="load local" type="button" value="Load Local SRE" onclick="streeVis.loadLocalLibrary()"></input>
         </td>
         <td align="left">
-          <input type="checkbox" id="semanticAnnotation" value="semanticAnnotation">Annotation</input>
+          <input type="checkbox" id="semanticAnnotation" value="semanticAnnotation"><label for="semanticAnnotation">Annotation</label></input>
         </td>
       </tr>
     </table>
