@@ -12,19 +12,19 @@
   ],
   "bugs": {
     "email": "volker.sorge@gmail.com",
-    "url": "https://github.com/zorkow/speech-rule-engine/issues"
+    "url": "https://github.com/speech-rule-engine/speech-rule-engine/issues"
   },
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/zorkow/semantic-tree-visualiser"
+    "url": "https://github.com/speech-rule-engine/semantic-tree-visualiser"
   },
   "keywords": [
     "screen-reader",
     "semantic tree",
     "math"
   ],
-  "homepage": "https://github.com/zorkow/semantic-tree-visualiser",
+  "homepage": "https://github.com/speech-rule-engine/semantic-tree-visualiser",
   "dependencies": {
     "d3": ">=6.0.0",
     "mathjax": ">=3.0.0",
