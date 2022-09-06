@@ -14,7 +14,9 @@
   <script src="node_modules/speech-rule-engine/lib/sre.js"></script>
   <script>
     MathJax = {
-    paths: {sre: "node_modules/speech-rule-engine/lib/mathmaps/"}
+      paths: {sre: "node_modules/speech-rule-engine/lib/mathmaps/"},
+      loader: {load: ['[tex]/cases', '[tex]/empheq']},
+      tex: {packages: {'[+]': ['cases', 'empheq']}}
     };
   </script>
   <script type="text/x-sre-config">{json: "../speech-rule-engine/lib/mathmaps"} </script>
