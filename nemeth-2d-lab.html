@@ -1,0 +1,68 @@
+<!-- Copyright (c) 2016 The MathJax Consortium -->
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html lang="en"/>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+  <title>Semantic Tree Visualisation</title>
+  <link type="text/css" rel="stylesheet" href="styles/style.css"/>
+  <script type="text/javascript" src="node_modules/d3/dist/d3.min.js"></script>
+  <link type="text/css" rel="stylesheet" href="styles/tree.css"/>
+  <script type="text/javascript" src="lib/visualise.js"></script>
+  <script type="text/javascript">
+      streeVis.config.nemeth = true;
+  </script>
+<script>
+SREfeature = {json: "./node_modules/speech-rule-engine/lib/mathmaps"}
+</script>
+  <script src="node_modules/speech-rule-engine/lib/sre.js"></script>
+  <script>
+    MathJax = {
+      paths: {"[sre]": "./node_modules/speech-rule-engine/lib/mathmaps"},
+      loader: {load: ['[tex]/cases', '[tex]/empheq', '[tex]/mathtools']},
+      tex: {packages: {'[+]': ['cases', 'empheq', 'mathtools']}}
+    };
+  </script>
+  <script id="MathJax-script" async src="node_modules/mathjax/es5/tex-mml-chtml.js"></script>
+</head>
+  <body>
+    <header>
+      <div id="layout">
+        <div id="main">
+          <textarea id="input" rows="7" cols="35" style="font-size:120%" aria-label="Formula input"></textarea>
+        </div>
+        <div id="controls">
+          <div class="controls" id="rendering-controls">
+            <div class="header"><span>Rendering</span></div>
+            <div>
+              <input id="translate" type="button" value="LaTeX (Display)" onclick="streeVis.translateTex(true)"></input>
+            </div>
+            <div>
+              <input id="translate" type="button" value="LaTeX (Inline)" onclick="streeVis.translateTex(false)"></input>
+            </div>
+            <div>
+              <input id="translate" type="button" value="MathML (MathJax)" onclick="streeVis.translateMathML()"></input>
+            </div>
+            <div>
+              <input id="translate" type="button" value="MathML (direct)" onclick="streeVis.translateSRE()"></input>
+            </div>
+            <div id="buttons">
+              <div>
+                <select id="break" aria-label="Break Value" onchange="streeVis.displayNemeth()">
+                  <option>0</option>
+                </select>
+              </div>
+              <div>
+                <input id="keep" type="button" value="Keep" onclick="streeVis.keepNemeth()"></input>
+              </div>
+            </div>
+          </div>
+      </div>
+    </header>
+    <hr/>
+
+    <section id="body"></section>
+    <script type="text/javascript">
+      streeVis.nemeth();
+    </script>
+  </body>
+</html>

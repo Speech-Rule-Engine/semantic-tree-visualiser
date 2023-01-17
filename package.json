@@ -27,7 +27,7 @@
   "homepage": "https://github.com/speech-rule-engine/semantic-tree-visualiser",
   "dependencies": {
     "d3": ">=6.0.0",
-    "mathjax": ">=3.2.2",
+    "mathjax": "^3.2.2",
     "speech-rule-engine": ">=4.0.7"
   },
   "files": [
