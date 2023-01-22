@@ -1,6 +1,6 @@
 {
   "name": "sre-visualiser",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Visualiser for semantic tree generated in SRE.",
   "directories": {},
   "scripts": {
